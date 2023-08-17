@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
-import PropTypes from 'prop-types'
-
 
 const Video = (props) => {
   const videoNode = useRef(null);
@@ -28,20 +26,22 @@ const Video = (props) => {
 
 const StatsHint = (props) => {
   return(
-  <>
-    <p>Map Length: {props.length}</p>
-    <p>Star Rating: {props.starRating}</p>
-    <p>Language: {props.language}</p>
-    <p>Genre: {props.genre}</p>
-  </>)
+  <div className='col align-self-center p-3 mb-2 bg-body-tertiary'>
+    <h2>Map Length: {props.length}</h2>
+    <h2>Star Rating: {props.starRating}</h2>
+    <h2>Language: {props.language}</h2>
+    <h2>Genre: {props.genre}</h2>
+  </div>
+  )
 }
 
 const MapperHint = (props) => {
   return(
     <>
-    <a href={props.mapperUrl}>{props.mapperName}</a>
-    <br></br>
-    <img src={props.mapperAvatar}></img>
+    <div className='col align-self-start p-3 mb-2 bg-body-tertiary'>
+      <img className='rounded-5' src={props.mapperAvatar}></img>
+    </div>
+    <h2><a href={props.mapperUrl}>{props.mapperName}</a></h2>
     </>
   )
 }
@@ -49,10 +49,10 @@ const MapperHint = (props) => {
 const BackgroundHint = (props) => {
 
   return(
-  <>
-  <p>Artist: {props.artistName}</p>
+  <div className='col align-self-center p-3 mb-2 bg-body-tertiary'>
   <img src={props.bgUrl}></img>
-  </>
+  <h2>Artist: {props.artistName}</h2>
+  </div>
   )
 }
 
@@ -94,23 +94,17 @@ function HintInfo({render, id, data}) {
   }
 }
 
-
 export default function Hint(props) {
 
-  Hint.defaultProps = {
-    type: "text",
-    inactive: true
-  }
-
   return (
-    <div>
+    <>
       <HintInfo render={props.hintNumber === 0} id={0} data={props.mapData}/>
       <HintInfo render={props.hintNumber === 1} id={1} data={props.mapData}/>
       <HintInfo render={props.hintNumber === 2} id={2} data={props.mapData}/>
       <HintInfo render={props.hintNumber === 3} id={3} data={props.mapData}/>
       <HintInfo render={props.hintNumber === 4} id={4} data={props.mapData}/>
       <HintInfo render={props.hintNumber === 5} id={5} data={props.mapData}/>
-    </div>
+    </>
   )
 
 }

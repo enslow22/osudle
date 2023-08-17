@@ -1,27 +1,28 @@
 import React, { useEffect, useState } from 'react'
 import Autosuggest from 'react-autosuggest/dist/Autosuggest'
 
+// Todo replace this whole thing with Downshift
 export default function Suggestions(props) {
 
-  
   // Stuff for AutoSuggestions
 
-  const words = props.dataList
+  const words = props.dataList.map(map => map.title)
 
   const getSuggestions = value => {
     const inputValue = value.trim().toLowerCase();
     const inputLength = inputValue.length;
 
-    return inputLength === 0 ? [] : words.filter(lang =>
-      lang.title.toLowerCase().slice(0, inputLength) === inputValue
+    var suggestions = inputLength === 0 ? [] : words.filter(title =>
+      title.toLowerCase().slice(0, inputLength) === inputValue
     );
+    return [...new Set(suggestions)];
   };
 
-  const getSuggestionValue = suggestion => suggestion.title;
+  const getSuggestionValue = suggestion => suggestion;
 
   const renderSuggestion = suggestion => (
     <span>
-      {suggestion.title}
+      {suggestion}
     </span>
   );
 
@@ -51,16 +52,16 @@ export default function Suggestions(props) {
     className: "form-control"
   }
 
-  const onSubmit = () => {
+  const onSubmit = (e) => {
     setState(oldState => {
-      return {...oldState, value: ''}
+      return {...oldState, value: state.value}
     })
-    props.onClick()
+    props.onClick(e, state.value)
   }
 
   return (
     <>
-
+    <div className='col-3'>
     <Autosuggest 
       suggestions={state.suggestions}
       onSuggestionsFetchRequested={onSuggestionsFetchRequested}
@@ -68,9 +69,12 @@ export default function Suggestions(props) {
       getSuggestionValue={getSuggestionValue}
       renderSuggestion={renderSuggestion}
       inputProps={inputProps}/>
+    </div>
+    <div className='col-1'>
       <button className={"btn btn-primary"} onClick={onSubmit}>
           Submit
       </button>
+    </div>
     </>
   )
 }
