@@ -39,9 +39,9 @@ const MapperHint = (props) => {
   return(
     <>
     <div className='col align-self-start p-3 mb-2 bg-body-tertiary'>
-      <img className='rounded-5' src={props.mapperAvatar}></img>
+      <img className='rounded-5' src={props.mapperAvatar}></img>  
+      <h2><a href={props.mapperUrl}>{props.mapperName}</a></h2>
     </div>
-    <h2><a href={props.mapperUrl}>{props.mapperName}</a></h2>
     </>
   )
 }
@@ -76,7 +76,7 @@ function HintInfo({render, id, data}) {
 
   switch (id) {
     case 0:
-      play.sources['src'] =  data.cloudinary_link_3
+      play.sources['src'] =  data.cloudinary_link_1
       return <Video {...play} />
     case 1:
       play.sources['src'] =  data.cloudinary_link_2
@@ -89,7 +89,7 @@ function HintInfo({render, id, data}) {
     case 4:
       return <BackgroundHint artistName={data.artist} bgUrl={data.background}/>
     case 5:
-      play.sources['src'] =  data.cloudinary_link_1
+      play.sources['src'] =  data.cloudinary_link_3
       return <Video {...play} />
   }
 }

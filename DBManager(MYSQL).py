@@ -14,10 +14,12 @@ cloudinary.config(
     api_secret=cloud_secret
 )
 
-
 class Base(DeclarativeBase):
     pass
 
+# TODO
+# ADD A FUNCTION TO BACKUP DB
+# ADD A FUNCTION TO GENERATE DAILY MAPS FOR ROWS ALREADY IN DB
 
 class osuMap(Base):
     __tablename__ = 'osuMapInfo'
@@ -143,21 +145,23 @@ class osuMap(Base):
         self.mapper_avatar = mapper.avatar_url
 
         # Media
-        # Check if media already exists on cloud
+        # Check to see if media needs to be generated
+        # Media needs to be generated if it is a daily map and the media does not yet exist
         result = cloudinary.Search().expression("folder=%s" % (str(self.map_id))).execute()
         if result['total_count'] >= 3:
             print("Media has already been generated. Skipping.")
-            self.cloudinary_link_1 = result['resources'][0]['secure_url'].replace(".mp4", ".m3u8")
+            self.cloudinary_link_1 = result['resources'][2]['secure_url'].replace(".mp4", ".m3u8")
             self.cloudinary_link_2 = result['resources'][1]['secure_url'].replace(".mp4", ".m3u8")
-            self.cloudinary_link_3 = result['resources'][2]['secure_url'].replace(".mp4", ".m3u8")
+            self.cloudinary_link_3 = result['resources'][0]['secure_url'].replace(".mp4", ".m3u8")
             print(self.cloudinary_link_1)
             print(self.cloudinary_link_2)
             print(self.cloudinary_link_3)
+        elif daily_map_number == -1:
+            print("Not a daily map, Skipping media")
         else:
             self.generate_Media(1, starting_points[0])
             self.generate_Media(2, starting_points[1])
             self.generate_Media(3, starting_points[2], music=True)
-
 
 # errors: 3912664,
 # IF YOU WANT TO EDIT THE DEFAULT STARTING POINTS FOR THE VIDEO JUST ADD ONE MAP AT A TIME
@@ -174,15 +178,15 @@ def addMaps(maps, starting_points=None, daily_map=False):
         # Add map to daily list
         daily_map_number = -1
         if daily_map:
-            list_of_dailies = [x.MOTD for x in allMaps]
-            daily_map_number = max(list_of_dailies) + 1
+            list_of_dailies = [x.MOTD for x in allMaps if x.MOTD != -1]
+            a = sorted(set(range(1, list_of_dailies[-1])) - set(list_of_dailies))
+            daily_map_number = max(list_of_dailies) if a is [] else a[0]
 
         # Check to see if map is not in db
         map_exists = session.query(exists().where(osuMap.map_id == map_id)).scalar()
         if map_exists:
             print("%s already exists in database. Skipping" % str(map_id))
         else:
-
             if daily_map_number > 0:
                 print("%s is daily map number %s!" % (str(map_id), str(daily_map_number)))
             else:
@@ -200,7 +204,11 @@ if __name__ == '__main__':
     Session = sessionmaker(bind=engine)
     session = Session()
 
+
+    map_id_list = [2096523]
+
+
     # 119803, 3912664
-    addMaps([487384, 555797, 676172, 1860169, 131891], daily_map=True)
+    addMaps(map_id_list, daily_map=True)
 
     print("Finished!")
