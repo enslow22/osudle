@@ -7,7 +7,9 @@ import GameEnd from './components/GameEnd'
 // TODO:
 // -Replace Suggestions with Downshift
 // -Load all videos exactly once instead of grabbing them over and over again
+// -Display wrong guesses
 // -Add more to finishGame()
+// -Clear input text after submit
 //
 // -Add a non-daily mode
 
