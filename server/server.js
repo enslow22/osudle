@@ -9,13 +9,12 @@ const db = mysql.createConnection({
     database: 'test'
 });
 
-app.get("/api", (req, res) =>{
+app.get("/api", (req, res) => {
     const q = "SELECT * FROM osumapinfo"
-    db.query(q, (err, data)=>{
+    db.query(q, (err, data)=> {
         if (err) return res.json(err)
         return res.json(data)
     })
-
 })
 
 app.listen(5000, () => {console.log("Server started on port 5000")})
