@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import Autosuggest from 'react-autosuggest/dist/Autosuggest'
+import Autosuggest from 'react-autosuggest'
 
 // Todo replace this whole thing with Downshift
 export default function Suggestions(props) {
@@ -46,22 +46,22 @@ export default function Suggestions(props) {
   };
 
   const inputProps = {
-    placeholder: 'Type something...',
+    placeholder: 'Enter a map',
     value: state.value,
     onChange: onChange,
-    className: "form-control"
+    className: "form-control",
   }
 
   const onSubmit = (e) => {
-    setState(oldState => {
-      return {...oldState, value: state.value}
-    })
     props.onClick(e, state.value)
+    setState(oldState => {
+      return {...oldState, value: ''}
+    })
   }
 
   return (
     <>
-    <div className='col-3'>
+    <div className='col col-lg-2'>
     <Autosuggest 
       suggestions={state.suggestions}
       onSuggestionsFetchRequested={onSuggestionsFetchRequested}
@@ -70,10 +70,10 @@ export default function Suggestions(props) {
       renderSuggestion={renderSuggestion}
       inputProps={inputProps}/>
     </div>
-    <div className='col-1'>
+    <div className='col col-lg-1'>
       <button className={"btn btn-primary"} onClick={onSubmit}>
-          Submit
-      </button>
+            Submit
+        </button>
     </div>
     </>
   )
