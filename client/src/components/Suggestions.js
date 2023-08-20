@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Autosuggest from 'react-autosuggest'
 
 // Todo replace this whole thing with Downshift

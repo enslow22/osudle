@@ -24,11 +24,12 @@ export default function GameEnd(props) {
     return (
         <>
         <div className='col'>
-            <div>{(props.winner) ? (<h1>Congrats!</h1>) : (<h2>Better luck next time!</h2>)}</div>
+            <div><h1>{(props.winner) ? ("Congrats!") : ("Better luck next time!")} The answer was {props.mapTitle}</h1></div>
             <h2>
             <a href={props.mapLink}>Check out the map</a>
             </h2>
-            {(time === 0) ? (<></>) : (<h2>{dayjs(time + 8*3600*1000).format("HH:mm:ss")}</h2>) }
+            {(time === 0) ? (<h2>Next map in: {"24:00:00"}</h2>) : (<h2>Next map in: {dayjs(time + 8*3600*1000).format("HH:mm:ss")}</h2>) }
+            <h2>Also check out the previous days!</h2>
         </div>
         </>
     )
