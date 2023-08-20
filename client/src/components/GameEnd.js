@@ -6,7 +6,6 @@ export default function GameEnd(props) {
 
     // time is the seconds until the next day
     const [time, setTime] = useState(0);
-
     const now = dayjs()
     const deadline = dayjs().endOf('day')
 
@@ -14,13 +13,19 @@ export default function GameEnd(props) {
         setTime(deadline.diff(now))
     }
 
+    // Set initial time (might be unnecessary)
+    useEffect(() => {
+        getTime()
+    }, [])
 
+    // Update the time every 1000ms
     useEffect(()=>{
         const interval = setInterval(() => getTime(), 1000);
 
         return () => clearInterval(interval)
     }, [time])
 
+    // Return a game-end message to the player and the time until the next map unlocks
     return (
         <>
         <div className='col'>

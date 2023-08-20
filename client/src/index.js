@@ -9,10 +9,15 @@ import "./index.css";
 import PreviousMaps from "./components/PreviousMaps";
 import dayjs from "dayjs";
 
+// Calculate the number of days since the start of osudle!
 const elapsed = dayjs().diff(dayjs('2023-08-11 00:00'), 'day');
+
+// dailies is an araray of objects that stores all of hte daily maps
+// allData is every row in the db (each row coreresponds to an osu map)
 var dailies = null
 var allData = null
 
+// Get data from backend
 await fetch("/api").then(
   response => response.json()
 ).then(
@@ -22,6 +27,7 @@ await fetch("/api").then(
   }
 )
 
+// Routes for each url
 const router = createBrowserRouter([
   {
     path: "/",

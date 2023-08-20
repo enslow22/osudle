@@ -15,21 +15,39 @@ import { useParams } from 'react-router-dom'
 // -add a dt button
 // -make it so that the hint container has constant size
 // -add user cookies
+// -fix video player default volume level
+// figure out how to use tailwind
+// Add info modal
+// MAKE EVERYTHING PIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIINK
 
+/**
+ * @param {object} props Component props
+ * @param {Array} props.backendData An array of objects where each element represents an osu map
+ * @param {Array} props.daliies An array of objbects where each element corresponds to a daily map (This is a subset of props.backendData)
+ */
 function Game(props) {
 
+  // backendData  stores all the rows of maps in the database (Used for autosuggest)
+  // infos        stores the gameState, including the answer, current score, hint number, and a list of incorrect guesses
   const [backendData, setBackendData] = useState(props.backendData)
   const [infos, setInfos] = useState({mapInfo:null, score:0, hint:0, won:null, guesses:[]})
 
+  // temp will be undefined if called from the home page. If it is called from /previous-games/:id, then it will have value :id
+  // We can use this value to determine if the user entered from the home page or from the previous days
   const temp = useParams()
   const dayNumber = (temp.MOTD == undefined) ? props.dailies.length : temp.MOTD
+
+  // A list that stores all of the user's previous guesses
   let guessList = infos.guesses.map((guess, index) => {return <li style={{color:'#FF8EE6'}} key={index}>{guess}</li>})
   
+  // initialize the game by setting the map to the appropiate row in dailies
   useEffect(() => {
     setInfos(oldInfos => {return {...oldInfos, mapInfo: props.dailies[dayNumber-1]}})
   }, [])
 
+  // The handler to finish the game after a user has lost or won
   const finishGame = (winner) => {
+    // TODO: Add more stuff here
     if (winner) {
       console.log("congrats")
     }
@@ -40,18 +58,22 @@ function Game(props) {
     setInfos({...infos, score: 6, won:winner})
   }
 
+  // Set the hint
   const changeHint = (e, id) => {
     setInfos(oldInfos => {
       return {...oldInfos, hint: id}
     });
   }
 
+  // Handler to submit an answer (Checks if a game should be over)
   const submitAnswer = (e, value) => {
 
-    if (value === '') {
+    // Don't accept empty inputs
+    if (value.trim() === '') {
       return
     }
 
+    // End the game if necessary
     if (infos.mapInfo.title === value) {
       finishGame(true)
       return
@@ -61,17 +83,19 @@ function Game(props) {
       return
     }
 
+    // Return a new info object
     const newInfos = {...infos, score: infos.score+1, hint: infos.score+1, guesses: infos.guesses.concat([value])}
-
     setInfos(newInfos)
   }
 
   return (
-    <>
+    <> 
       <h3>Map #{dayNumber}</h3>
+
       <div className='row' style={{maxHeight:'95%'}}>
-        {(infos.mapInfo === null ) ? (<p>Loading</p>): (<Hint hintNumber={infos.hint} mapData={infos.mapInfo}/>)}
+        {(infos.mapInfo === null ) ? (<p>Loading</p>): (<Hint hintNumber={infos.hint} mapData={infos.mapInfo}/>) /* Hint window */}
       </div>
+
       <div className='row'>
         <div style={{textAlign: 'center', margin:'10px'}}>
           <HintButton id={0} onClick={changeHint} infos={infos}/>
@@ -93,12 +117,11 @@ function Game(props) {
         {(<ol style={{listStyle:'none', fontSize:'40px'}} className='v bg-body-tertiary'>{guessList}</ol>)}
       </div>) : (null)}
       <QuickButtons dayNumber={dayNumber} maxDays={props.dailies.length}/>
-
     </>
   )
 }
 
-
+//Adds the next and previous day buttons in the bottom of the screen
 function QuickButtons(props){
   return (
   <>
