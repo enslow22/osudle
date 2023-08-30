@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 
 function MapLink(props) {
-  return <a style={{textAlign:'center', padding:'15px'}} class="list-group-item list-group-item-action" href={"previous-maps/"+props.MOTD}>Map Number {props.MOTD}</a>
+  return <a style={{textAlign:'center', padding:'15px', fontSize:'22px'}} class="list-group-item list-group-item-action" href={"previous-maps/"+props.MOTD}>Map Number {props.MOTD}</a>
 }
 
 export default function PreviousMaps(props) {
