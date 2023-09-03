@@ -8,10 +8,12 @@ import Game from './components/Game';
 import "./index.css";
 import PreviousMaps from "./components/PreviousMaps";
 import dayjs from "dayjs";
+import { Navbar, Nav, Container } from 'react-bootstrap';
+import InfoModal from './components/InfoModal';
 
 // Calculate the number of days since the start of osudle!
-const elapsed = dayjs().diff(dayjs('2023-08-11 00:00'), 'day');
-
+//const elapsed = dayjs().diff(dayjs('2023-08-11 00:00'), 'day');
+const elapsed = dayjs().diff(dayjs('2023-06-11 00:00'), 'day')
 // dailies is an araray of objects that stores all of hte daily maps
 // allData is every row in the db (each row coreresponds to an osu map)
 var dailies = null
@@ -46,7 +48,18 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+      <Navbar bg="dark" data-bs-theme="dark">
+        <Navbar.Brand href="/">
+          <h1>osudle!</h1>
+        </Navbar.Brand>
+        <Nav className="me-auto">
+          <Nav.Link href="/previous-maps"><h2>Previous Days</h2></Nav.Link>
+        </Nav>
+        <InfoModal/>
+      </Navbar>
+    <Container>
+      <RouterProvider router={router} />
+    </Container>
   </React.StrictMode>
 );
 

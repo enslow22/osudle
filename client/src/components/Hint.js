@@ -39,6 +39,7 @@ const Video = (props) => {
 const StatsHint = (props) => {
   return(
   <div className='col align-self-center p-3 mb-2 bg-body-tertiary' style={{display:(props.visible) ? 'block' : 'none'}}>
+    <h2>Artist: {props.artistName}</h2>
     <h2>Map Length: {props.length}</h2>
     <h2>Star Rating: {props.starRating}</h2>
     <h2>Language: {props.language}</h2>
@@ -73,7 +74,6 @@ const BackgroundHint = (props) => {
   return(
   <div className='col align-self-center p-3 mb-2 bg-body-tertiary' style={{display:(props.visible) ? 'block' : 'none'}}>
   <Image src={props.bgUrl} fluid rounded/>
-  <h2>Artist: {props.artistName}</h2>
   </div>
   )
 }
@@ -101,21 +101,9 @@ export default function Hint(props) {
     <Video {...play} sources={{src: data.cloudinary_link_1, type: "application/x-mpegURL"}} visible={props.hintNumber === 0}/>
     <Video {...play} sources={{src: data.cloudinary_link_2, type: "application/x-mpegURL"}} visible={props.hintNumber === 1}/>
     <MapperHint  visible={props.hintNumber === 2} mapperName={data.mapper_name} mapperAvatar={data.mapper_avatar} mapperUrl={data.mapper_url} previousNames={data.mapper_previous_names}/>
-    <StatsHint  visible={props.hintNumber === 3} length={(data.map_length >= 600) ? time.slice(14, 19) : time.slice(15,19)} starRating={data.star_rating} language={data.language} genre={data.genre}/>
-    <BackgroundHint  visible={props.hintNumber === 4} artistName={data.artist} bgUrl={data.background}/>
+    <StatsHint  visible={props.hintNumber === 3} artistName={data.artist} length={(data.map_length >= 600) ? time.slice(14, 19) : time.slice(15,19)} starRating={data.star_rating} language={data.language} genre={data.genre}/>
+    <BackgroundHint  visible={props.hintNumber === 4} bgUrl={data.background}/>
     <Video {...play} sources={{src: data.cloudinary_link_3, type: "application/x-mpegURL"}} visible={props.hintNumber === 5}/>
   </>
   )
-  /**
-  return (
-    <>
-      <HintInfo render={props.hintNumber === 0} id={0} data={props.mapData}/>
-      <HintInfo render={props.hintNumber === 1} id={1} data={props.mapData}/>
-      <HintInfo render={props.hintNumber === 2} id={2} data={props.mapData}/>
-      <HintInfo render={props.hintNumber === 3} id={3} data={props.mapData}/>
-      <HintInfo render={props.hintNumber === 4} id={4} data={props.mapData}/>
-      <HintInfo render={props.hintNumber === 5} id={5} data={props.mapData}/>
-    </>
-  ) */
-
 }

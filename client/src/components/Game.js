@@ -10,20 +10,20 @@ import DownshiftSuggestions from './DownShiftSuggestions'
 // TODO:
 // IMPORTANT  STUFF //
 // -make it so that the hint container has constant size
-// MAKE EVERYTHING PIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIINK
-// Add info modal in top right
-// -add user cookies
-// Display guesses even after win
+// add user cookies (Maybe authenticate from osu api ? might be unnecessary)
 // change input submit answer box to empty after clicking submit
-// Move headers from index.html into index.js
+// Make the default video volume like 50% or something
+// Fix map 13 (c-type)
 
 // LESS IMPORTANT STUFF //
-// -add a dt button
-// -Collect and download user scores for data analysis later?
+// add a dt button
+// add confetti on win !
+// Collect and download user scores for data analysis later?
 // Add country code to db to include in Mapper Hint
 // Add popovers for previous guesses (include the diff they chose and mapper maybe idk)
+// Add popovers for the mapper's previous names
 // Maybe change Buttons into a tabs component from bootstrap?
-// Turn all Hint Buttons into abutton group
+// Turn all Hint Buttons into a button group (Then we can style them easier)
  
 /**
  * @param {object} props Component props
@@ -35,7 +35,7 @@ function Game(props) {
   // backendData  stores all the rows of maps in the database (Used for autosuggest)
   // infos        stores the gameState, including the answer, current score, hint number, and a list of incorrect guesses
   const backendData = props.backendData
-  const [infos, setInfos] = useState({mapInfo:null, score:0, hint:0, won:null, guesses:[]})
+  const [infos, setInfos] = useState({mapInfo:null, score:0, hint:0, won:null, guesses:[], hintsUnlocked: 0})
 
   // temp will be undefined if called from the home page. If it is called from /previous-games/:id, then it will have value :id
   // We can use this value to determine if the user entered from the home page or from the previous days
@@ -66,14 +66,14 @@ function Game(props) {
     }
 
     // Return a new info object
-    var newInfos = {...infos, score: infos.score+1, hint: infos.score+1, guesses: infos.guesses.concat([value])}
+    var newInfos = {...infos, score: infos.score+1, hint: infos.hintsUnlocked+1, guesses: infos.guesses.concat([value]), hintsUnlocked: infos.hintsUnlocked+1}
     
     // See if the game has ended
     if (infos.mapInfo.title === value) {
-      newInfos = {...newInfos, won: true}
+      newInfos = {...newInfos, won: true, hint: 5, hintsUnlocked: 6}
     }
     else if (infos.score+1 >= 6) {
-      newInfos = {...newInfos, won: false}
+      newInfos = {...newInfos, won: false, hint: 5, hintsUnlocked: 6}
     }
 
     setInfos(newInfos)
@@ -92,24 +92,24 @@ function Game(props) {
 
       {(infos.mapInfo === null ) ? (<p>Loading</p>): (<Hint hintNumber={infos.hint} mapData={infos.mapInfo}/>) /* Hint window */}
 
-      <Row>
-        <div style={{textAlign: 'center', margin:'10px'}}>
-          <HintButton id={0} onClick={changeHint} infos={infos}/>
-          <HintButton id={1} onClick={changeHint} infos={infos}/>
-          <HintButton id={2} onClick={changeHint} infos={infos}/>
-          <HintButton id={3} onClick={changeHint} infos={infos}/>
-          <HintButton id={4} onClick={changeHint} infos={infos}/>
-          <HintButton id={5} onClick={changeHint} infos={infos}/>
-          <SkipButton onClick={submitAnswer} />
-        </div>
-      </Row>
+
+      <div style={{textAlign: 'center', margin:'10px, 10px'}}>
+        <HintButton id={0} onClick={changeHint} infos={infos}/>
+        <HintButton id={1} onClick={changeHint} infos={infos}/>
+        <HintButton id={2} onClick={changeHint} infos={infos}/>
+        <HintButton id={3} onClick={changeHint} infos={infos}/>
+        <HintButton id={4} onClick={changeHint} infos={infos}/>
+        <HintButton id={5} onClick={changeHint} infos={infos}/>
+        {(infos.won === null) ? (<SkipButton onClick={submitAnswer}/>) : (<></>)}
+      </div>
+
 
       {(infos.won === null) ? (<DownshiftSuggestions dataList={backendData} onClick={submitAnswer} />) : (<GameEnd winner={infos.won} mapInfo={infos.mapInfo}/>)}
       
       <br></br>
-      {(guessList.length !== 0 && !infos.won) ? (
+      {(guessList.length !== 0) ? (
       <Row className='justify-content-md-center'>
-        <h1 className="text-primary" style={{fontSize:'80px', textAlign:'left'}}>Current Guesses</h1>
+        <h1 className="text-primary" style={{fontSize:'80px', textAlign:'left'}}>Guesses</h1>
         {(<ol style={{listStyle:'none', fontSize:'40px'}} className='v bg-body-tertiary'>{guessList}</ol>)}
       </Row>) : (null)}
       <QuickButtons dayNumber={dayNumber} maxDays={props.dailies.length}/>
