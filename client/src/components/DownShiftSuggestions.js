@@ -1,11 +1,12 @@
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import {useCombobox} from 'downshift';
+
 
 export default function DownshiftSuggestions(props) {
 
     // Stuff for AutoSuggestions
     // Dictionary of maps
-    const listOfMaps = props.dataList.map(map => ({title: map.title, diff: map.diff_name}))
+    const listOfMaps = props.dataList.map(map => ({title: map.title, diff: map.diff_name, background: map.background}))
     const [items, setItems] = useState(listOfMaps)
     const {
         isOpen,
@@ -41,7 +42,7 @@ export default function DownshiftSuggestions(props) {
         if (selectedItem === null) {
             return
         }
-        props.onClick(e, selectedItem.title)
+        props.onClick(e, selectedItem)
     }
 
     return (

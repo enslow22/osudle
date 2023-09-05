@@ -42,7 +42,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/previous-maps/:MOTD",
-    element: <><Game backendData={allData} dailies={dailies}/></>
+    element: <Game backendData={allData} dailies={dailies}/>
   }
 ]);
 
@@ -57,9 +57,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         </Nav>
         <InfoModal/>
       </Navbar>
-    <Container>
-      <RouterProvider router={router} />
-    </Container>
+      <Container>
+        <RouterProvider router={router} />
+      </Container>
   </React.StrictMode>
 );
 

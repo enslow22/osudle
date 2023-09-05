@@ -5,9 +5,6 @@ import Image from 'react-bootstrap/Image'
 import { Button, Col, Row } from 'react-bootstrap'
 //import ReactCountryFlag from 'react-country-flag'
 
-// TODO:
-// Hide elements instead of unmounting them to save video bandwidth !!!!!!
-
 const Video = (props) => {
   const videoNode = useRef(null);
   const [player, setPlayer] = useState(null);
@@ -98,12 +95,14 @@ export default function Hint(props) {
 
   return(
   <>
-    <Video {...play} sources={{src: data.cloudinary_link_1, type: "application/x-mpegURL"}} visible={props.hintNumber === 0}/>
-    <Video {...play} sources={{src: data.cloudinary_link_2, type: "application/x-mpegURL"}} visible={props.hintNumber === 1}/>
-    <MapperHint  visible={props.hintNumber === 2} mapperName={data.mapper_name} mapperAvatar={data.mapper_avatar} mapperUrl={data.mapper_url} previousNames={data.mapper_previous_names}/>
-    <StatsHint  visible={props.hintNumber === 3} artistName={data.artist} length={(data.map_length >= 600) ? time.slice(14, 19) : time.slice(15,19)} starRating={data.star_rating} language={data.language} genre={data.genre}/>
-    <BackgroundHint  visible={props.hintNumber === 4} bgUrl={data.background}/>
-    <Video {...play} sources={{src: data.cloudinary_link_3, type: "application/x-mpegURL"}} visible={props.hintNumber === 5}/>
+    <div style={{height: '720px', width: '1280px'}}>
+      <Video {...play} sources={{src: data.cloudinary_link_1, type: "application/x-mpegURL"}} visible={props.hintNumber === 0}/>
+      <Video {...play} sources={{src: data.cloudinary_link_2, type: "application/x-mpegURL"}} visible={props.hintNumber === 1}/>
+      <MapperHint  visible={props.hintNumber === 2} mapperName={data.mapper_name} mapperAvatar={data.mapper_avatar} mapperUrl={data.mapper_url} previousNames={data.mapper_previous_names}/>
+      <StatsHint  visible={props.hintNumber === 3} artistName={data.artist} length={(data.map_length >= 600) ? time.slice(14, 19) : time.slice(15,19)} starRating={data.star_rating} language={data.language} genre={data.genre}/>
+      <BackgroundHint  visible={props.hintNumber === 4} bgUrl={data.background}/>
+      <Video {...play} sources={{src: data.cloudinary_link_3, type: "application/x-mpegURL"}} visible={props.hintNumber === 5}/>
+    </div>
   </>
   )
 }
