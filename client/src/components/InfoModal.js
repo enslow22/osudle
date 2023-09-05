@@ -49,7 +49,7 @@ export default function InfoModal(props) {
             </Modal.Header>
             <Modal.Body style={{fontSize:'18px'}}>
                 <p>I'm enslow, and I built this as a side project for fun. It's heavily inspired by <a href='http://www.guessthe.game'>guessthe.game</a></p>
-                <p>I plan on maintaining this for a while, so if you have suggestions (features, bugs, map suggestions, etc.) feel free to send me a message!</p>
+                <p>I plan on maintaining this for a while, so if you have suggestions (features, bugs, maps, etc.) feel free to send me a message!</p>
                 <h1>
 
                 <a href='https://osu.ppy.sh/users/10651409' target='_blank' style={{textDecorationLine: 'none'}}>

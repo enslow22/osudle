@@ -12,12 +12,12 @@ import Confetti from 'react-confetti'
 // IMPORTANT  STUFF //
 // change input submit answer box to empty after clicking submit
 // Make the default video volume like 50% or something
-// Fix cookies (one cookie for all data, encode it)
 // Fix map 13 (c-type)
 // Move the initializing stuff into the useffect(, [])
 
 // LESS IMPORTANT STUFF //
 // make the game end screen prettier
+// Add a windowsize hook for the confetti
 // add a dt button
 // Collect and download user scores for data analysis later?
 // Add country code to db to include in Mapper Hint
@@ -96,7 +96,7 @@ function Game(props) {
   return (
     (infos === null || mapInfo === null || backendData === null) ? <h1>Loading!</h1> : 
     <>
-      <Confetti run={(infos.won === true)} numberOfPieces={400} gravity={0.1} friction={0.95} recycle={false} height={visualViewport.height} tweenFunction={function easeOutQuad(t, b, _c, d) {var c = _c - b; return -c * (t /= d) * (t - 600) + b;}} confettiSource={{x:visualViewport.width/2 - 50, y:visualViewport.height, w:100, h:10}} initialVelocityX={40} initialVelocityY={{min: -80, max: -12}}/>
+      <Confetti run={(infos.won === true)} numberOfPieces={500} gravity={0.1} friction={0.95} recycle={false} height={visualViewport.height*2} tweenFunction={function easeOutQuad(t, b, _c, d) {var c = _c - b; return -c * (t /= d) * (t - 600) + b;}} confettiSource={{x:visualViewport.width/2 - 100, y:visualViewport.height, w:200, h:10}} initialVelocityX={70} initialVelocityY={{min: -80, max: -5}}/>
       
       <Row>
         <Col>
