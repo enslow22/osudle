@@ -14,6 +14,7 @@ import Confetti from 'react-confetti'
 // Make the default video volume like 50% or something
 // Fix map 13 (c-type)
 // Move the initializing stuff into the useffect(, [])
+// Nobody told me this but cloudinary has their own video player so i didnt actually have to use videojs
 
 // LESS IMPORTANT STUFF //
 // make the game end screen prettier
@@ -55,6 +56,8 @@ function Game(props) {
     setMapInfo(props.dailies[dayNumber-1])
     setBackendData(props.backendData)
     setInfos(defaultInfos)
+  
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Set the currently viewed hint

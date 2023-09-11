@@ -1,15 +1,16 @@
 {
   "name": "client",
   "version": "0.1.0",
-  "proxy": "http://localhost:5000",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.5.0",
     "bootstrap": "^5.3.1",
     "dayjs": "^1.11.9",
     "downshift": "^8.1.0",
+    "node": "^20.5.1",
     "react": "18.2.0",
     "react-autosuggest": "^10.1.0",
     "react-bootstrap": "^2.8.0",
@@ -18,6 +19,7 @@
     "react-dom": "18.2.0",
     "react-router-dom": "^6.15.0",
     "react-scripts": "^5.0.1",
+    "video.js": "^8.5.2",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -49,7 +51,10 @@
     "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "@types/react-autosuggest": "^10.1.6",
-    "video.js": "^8.5.2"
+    "@types/react-autosuggest": "^10.1.6"
+  },
+  "options": {
+    "allowedHosts": ["osudle-api", ".osudle-api"],    
+    "proxy": "http://osudle-api:5000"
   }
 }

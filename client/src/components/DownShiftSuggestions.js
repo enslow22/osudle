@@ -10,8 +10,6 @@ export default function DownshiftSuggestions(props) {
     const [items, setItems] = useState(listOfMaps)
     const {
         isOpen,
-        getToggleButtonProps,
-        getLabelProps,
         getMenuProps,
         getInputProps,
         highlightedIndex,

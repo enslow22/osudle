@@ -1,0 +1,31 @@
+services:
+  db:
+    container_name: osudle-db
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 'letmein'
+      MYSQL_DATABASE: 'test'
+      MYSQL_PASSWORD: 'letmein'
+      MYSQL_USER: 'user'
+    ports:
+      - '3306:3306'
+    volumes:
+      - osudle-db:/var/lib/mysql
+  api:
+    container_name: osudle-api
+    build: ./server
+    ports:
+      - '5000:5000'
+    depends_on:
+      - db
+  web:
+    container_name: osudle-web
+    build: ./client
+    ports:
+      - '3000:3000'
+    depends_on:
+      - api
+
+volumes:
+  osudle-db:

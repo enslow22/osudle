@@ -18,12 +18,14 @@ const Video = (props) => {
         }
       };
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (player !== null) {
       player.pause();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.visible])
 
   return (

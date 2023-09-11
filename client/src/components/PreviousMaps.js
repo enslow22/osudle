@@ -1,5 +1,3 @@
-import { map } from 'mathjs'
-import React, { useState, useEffect } from 'react'
 import { ListGroup, Row, Col, OverlayTrigger, Popover } from 'react-bootstrap'
 
 function MapLinkFromLocal(props) {
@@ -7,9 +5,9 @@ function MapLinkFromLocal(props) {
   const saveData = JSON.parse(localStorage.getItem('DailyMap'.concat(props.MOTD)))
 
   const mapPreview = (
-    <Popover id='popover-basic'>
+    <Popover id='popover-basic' key={props.id}>
       <Popover.Body>
-        <a href={props.link} target='_blank'><h4>{props.title}</h4></a>
+        <a href={props.link} target="_blank" rel='noopener noreferrer'><h4>{props.title}</h4></a>
         
       </Popover.Body>
     </Popover>)
@@ -41,38 +39,31 @@ function MapLinkFromLocal(props) {
 
   if (saveData !== null) {
     col2 = scores(saveData.guesses.length,saveData.won)
-    col3 = saveData.won !== null ? <OverlayTrigger placement='right' delay={{ show: 100, hide: 400 }} overlay={mapPreview}><img className='img-thumbnail' src={props.mapBG}></img></OverlayTrigger> : <>Not Finished!</>
+    col3 = saveData.won !== null ? <OverlayTrigger placement='right' delay={{ show: 100, hide: 400 }} overlay={mapPreview}><img alt='' className='img-thumbnail' src={props.mapBG}></img></OverlayTrigger> : <>Not Finished!</>
   }
 
   return(
-    <a className='text-decoration-none text-center' href={"previous-maps/"+props.MOTD}>
-    <ListGroup.Item action>
-      <Row className='justify-content-md-center align-items-center' style={{height: '70px'}}>
-        <Col className='fs-3'>
-          Map Number {props.MOTD}
-        </Col>
-        <Col>
-          {col2}
-        </Col>
-        <Col className='fs-3 align-items-center'>
-          {col3}
-        </Col>
-      </Row>
-    </ListGroup.Item>
-    </a>
+      <ListGroup.Item action>
+        <a className='text-decoration-none text-center' href={"previous-maps/"+props.MOTD}>
+          <Row className='justify-content-md-center align-items-center' style={{height: '70px'}}>
+            <Col className='fs-3'>
+              Map Number {props.MOTD}
+            </Col>
+            <Col>
+              {col2}
+            </Col>
+            <Col className='fs-3 align-items-center'>
+              {col3}
+            </Col>
+          </Row>
+        </a>
+      </ListGroup.Item>
   )
 }
 
 export default function PreviousMaps(props) {
 
-  const [backendData, setBackendData] = useState([])
-  useEffect(() => {
-    setBackendData(props.dailies)
-  }, [])
-
-
-  //let dayList = backendData.map((mapinfo, index) => {return <MapLink MOTD={mapinfo.MOTD}/>})
-  let dayList = backendData.map((mapinfo, index) => {return <MapLinkFromLocal key={index} MOTD={mapinfo.MOTD} mapBG={mapinfo.background} title={mapinfo.title} link={mapinfo.map_url}/>})
+  const dayList = props.dailies.map((mapinfo, index) => {return <MapLinkFromLocal key={mapinfo.map_id} MOTD={mapinfo.MOTD} mapBG={mapinfo.background} title={mapinfo.title} link={mapinfo.map_url}/>})
 
   return (
     <div className='row justify-content-md-center'>
