@@ -13,14 +13,14 @@ import InfoModal from './components/InfoModal';
 
 // Calculate the number of days since the start of osudle!
 //const elapsed = dayjs().diff(dayjs('2023-08-11 00:00'), 'day');
-const elapsed = dayjs().diff(dayjs('2023-06-11 00:00'), 'day')
+const elapsed = dayjs().diff(dayjs('2023-09-08 00:00'), 'day')
 // dailies is an araray of objects that stores all of hte daily maps
 // allData is every row in the db (each row coreresponds to an osu map)
 var dailies = null
 var allData = null
 
 // Get data from backend
-await fetch("/api").then(
+await fetch('http://localhost:5000/api').then(
   response => response.json()
 ).then(
   data => {
@@ -34,7 +34,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Game backendData={allData} dailies={dailies}/>,
-    errorElement: <h1>{"uwu sowwy we made a fuksy wucksies and we cuudent find youw page >ww<"}</h1>
+    errorElement: <h1>{"uwu sowwy we cuudent find youw page >ww<"}</h1>
   },
   {
     path: "previous-maps",

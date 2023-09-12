@@ -27,9 +27,6 @@ const db = mysql.createPool({
 
 
 app.get("/api", (req, res) => {
-    console.log('hello from server')
-    console.log(db)
-
     const q = "SELECT * FROM osumapinfo"
     db.query(q, (err, data) => {
         if (err) return res.json(err)
