@@ -23,7 +23,7 @@ services:
     container_name: osudle-web
     build: ./client
     ports:
-      - '3000:3000'
+      - '3000:80'
     depends_on:
       - api
 

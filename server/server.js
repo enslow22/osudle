@@ -7,23 +7,23 @@ const mysql = require('mysql2')
 app.use(express.json())
 app.use(cors())
 
-/*
+
 const db = mysql.createPool({
 	host: 'osudle-db',
 	user: 'user',
 	password: 'letmein',
 	database: 'test',
     port: '3306'
-});*/
+});
 
-
+/*
 const db = mysql.createPool({
 	host: 'localhost',
 	user: 'root',
 	password: 'letmein',
 	database: 'test',
     port: '3306'
-});
+});*/
 
 
 app.get("/api", (req, res) => {
