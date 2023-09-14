@@ -13,7 +13,7 @@ import InfoModal from './components/InfoModal';
 
 // Calculate the number of days since the start of osudle!
 //const elapsed = dayjs().diff(dayjs('2023-08-11 00:00'), 'day');
-const elapsed = dayjs().diff(dayjs('2023-09-08 00:00'), 'day')
+const elapsed = dayjs().diff(dayjs('2023-09-08 07:27'), 'day')
 
 // dailies is an araray of objects that stores all of hte daily maps
 // allData is every row in the db (each row coreresponds to an osu map)
