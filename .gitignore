@@ -26,4 +26,4 @@ yarn-debug.log*
 yarn-error.log*
 
 client/public/css/custom.css
-client/public/css/custom.css
+/client/public/css/custom.css
