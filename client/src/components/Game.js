@@ -26,6 +26,7 @@ import Confetti from 'react-confetti'
 // Add popovers for the mapper's previous names
 // Maybe change Buttons into a tabs component from bootstrap?
 // Turn all Hint Buttons into a button group (Then we can style them easier)
+// Make game reset at 7:27 pst
  
 /**
  * @param {object} props Component props

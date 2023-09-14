@@ -25,7 +25,6 @@ await fetch('http://146.190.33.184:5000/api').then(
   response => response.json()
 ).then(
   data => {
-    console.log(data)
     allData = data
     dailies = data.filter((row) => (row.MOTD !== -1 && row.MOTD < elapsed)).sort((a, b) => {return (a.MOTD > b.MOTD) ? 1 : -1})
   }
