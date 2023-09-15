@@ -1,11 +1,13 @@
-import React, { useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import {useCombobox} from 'downshift';
 
 
 export default function DownshiftSuggestions(props) {
 
     // Contains all the maps in the db for auto suggestions
+    const [listOfMaps, setListOfMaps] = useState([])
     const [items, setItems] = useState([])
+
     const {
         isOpen,
         getMenuProps,
@@ -15,7 +17,8 @@ export default function DownshiftSuggestions(props) {
         selectedItem
         } = useCombobox({
         onInputValueChange({inputValue}) {
-            setItems(items.filter(getMapsFilter(inputValue)))
+            setItems(listOfMaps.filter(getMapsFilter(inputValue)))
+            
         },
         items,
         itemToString(item) {
@@ -32,7 +35,7 @@ export default function DownshiftSuggestions(props) {
             var m2 = b.title.toLowerCase();
             return (m1 < m2) ? -1 : (m1 > m2) ? 1 : 0
         })
-        setItems(listOfMaps)
+        setListOfMaps(listOfMaps)
         // eslint-disable-next-line
     }, [])
     
@@ -46,7 +49,6 @@ export default function DownshiftSuggestions(props) {
     }
 
     function onClickHandler(e, selectedItem) {
-
     
         // Make sure selected item is not null
         if (selectedItem === null) {
@@ -58,7 +60,7 @@ export default function DownshiftSuggestions(props) {
     return (
         <>
             <div className='grid d-flex justify-content-center gap-1'> 
-                <input  placeholder='Start Typing...' {...getInputProps()}/>
+                <input  placeholder='Start Typing...' {...getInputProps({})}/>
                 <button className={"btn btn-primary"} onClick={(e) => {onClickHandler(e, selectedItem)}}>Submit</button>
             </div>
             <div className='row position-relative'>
