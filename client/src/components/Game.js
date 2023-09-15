@@ -26,7 +26,6 @@ import Confetti from 'react-confetti'
 // Add popovers for the mapper's previous names
 // Maybe change Buttons into a tabs component from bootstrap?
 // Turn all Hint Buttons into a button group (Then we can style them easier)
-// Make game reset at 7:27 pst
  
 /**
  * @param {object} props Component props
@@ -45,6 +44,7 @@ function Game(props) {
 
   // backendData  stores all the rows of maps in the database (Used for autosuggest)
   // infos        stores the gameState, including the answer, current score, hint number, and a list of incorrect guesses
+  // mapInfo      stores the info for today game's current map
   const [backendData, setBackendData] = useState(null)
   const [infos, setInfos] = useState(null)
   const [mapInfo, setMapInfo] = useState(null)
@@ -83,7 +83,7 @@ function Game(props) {
     
     // See if the game has ended
     if (mapInfo.title === value) {
-      newInfos = {...newInfos, won: true, hint: 5, hintsUnlocked: 6}
+      newInfos = {...newInfos, score: infos.score, won: true, hint: 5, hintsUnlocked: 6}
     }
     else if (infos.score+1 >= 6) {
       newInfos = {...newInfos, won: false, hint: 5, hintsUnlocked: 6}

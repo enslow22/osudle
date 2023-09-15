@@ -1,13 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState} from 'react'
 import {useCombobox} from 'downshift';
 
 
 export default function DownshiftSuggestions(props) {
 
-    // Stuff for AutoSuggestions
-    // Dictionary of maps
-    const listOfMaps = props.dataList.map(map => ({title: map.title, diff: map.diff_name, background: map.background}))
-    const [items, setItems] = useState(listOfMaps)
+    // Contains all the maps in the db for auto suggestions
+    const [items, setItems] = useState([])
     const {
         isOpen,
         getMenuProps,
@@ -17,13 +15,27 @@ export default function DownshiftSuggestions(props) {
         selectedItem
         } = useCombobox({
         onInputValueChange({inputValue}) {
-            setItems(listOfMaps.filter(getMapsFilter(inputValue)))
+            setItems(items.filter(getMapsFilter(inputValue)))
         },
         items,
         itemToString(item) {
             return item ? item.title : ''
         }
         })
+
+    
+    // Initialize the list from props
+    useEffect(() => {
+        const listOfMaps = props.dataList.map(map => ({title: map.title, diff: map.diff_name, background: map.background}))
+        listOfMaps.sort((a, b) => {
+            var m1 = a.title.toLowerCase();
+            var m2 = b.title.toLowerCase();
+            return (m1 < m2) ? -1 : (m1 > m2) ? 1 : 0
+        })
+        setItems(listOfMaps)
+        // eslint-disable-next-line
+    }, [])
+    
 
     function getMapsFilter(inputValue) {
         const lower = inputValue.toLowerCase()
