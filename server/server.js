@@ -2,29 +2,20 @@ const express = require('express')
 const cors = require('cors')
 const app = express()
 const mysql = require('mysql2')
-
+require('dotenv').config()
 
 app.use(express.json())
 app.use(cors())
 
 
+
 const db = mysql.createPool({
-	host: 'osudle-db',
-	user: 'user',
-	password: 'letmein',
-	database: 'test',
-    port: '3306'
+	host: process.env.ENV_HOST,
+	user: process.env.ENV_USER,
+	password: process.env.ENV_PASSWORD,
+	database: process.env.ENV_DATABASE,
+    port: process.env.ENV_PORT
 });
-
-/*
-const db = mysql.createPool({
-	host: 'localhost',
-	user: 'root',
-	password: 'letmein',
-	database: 'test',
-    port: '3306'
-});*/
-
 
 app.get("/api", (req, res) => {
     const q = "SELECT * FROM osumapinfo"
