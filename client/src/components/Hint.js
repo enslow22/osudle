@@ -121,7 +121,7 @@ export default function Hint(props) {
   var YTOptions = {
     height : '720px', 
     width : '1280px', 
-    playerVars : {controls: 0, rel: 0}
+    playerVars : {rel: 0}
   }
 
   const data = props.mapData
