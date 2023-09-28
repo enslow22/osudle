@@ -4,6 +4,7 @@ import videojs from '!video.js'
 import 'video.js/dist/video-js.css'
 import Image from 'react-bootstrap/Image'
 import { Button, Col, Row } from 'react-bootstrap'
+import YouTube, { YouTubeProps } from 'react-youtube'
 //import ReactCountryFlag from 'react-country-flag'
 
 const Video = (props) => {
@@ -35,6 +36,30 @@ const Video = (props) => {
     </div>
   );
 };
+
+const VideoYT = (props) => {
+  
+  // Get ID from link. Maybe go fix this in the DB
+  const youtubeID = props.src.replace("https://youtu.be/", '')
+
+  const [player, setPlayer] = useState(null);
+
+  // Handle pause
+  useEffect(() => {
+    if (player) {player.pauseVideo()}
+    
+  }, [props.visible])
+
+  // When player is ready, save the player object into state
+  const onPlayerReady = (event) => {
+    setPlayer(event.target)
+  }
+
+  return(
+  <div>
+    <YouTube videoId={youtubeID} style={{display:(props.visible) ? 'inline' : 'none'}} opts={props.opts} onReady={onPlayerReady}/>
+  </div>)
+}
 
 const StatsHint = (props) => {
   return(
@@ -93,18 +118,37 @@ export default function Hint(props) {
       }
   };
 
+  var YTOptions = {
+    height : '720px', 
+    width : '1280px', 
+    playerVars : {controls: 0, rel: 0}
+  }
+
   const data = props.mapData
+  console.log(data)
   const time = new Date(data.map_length * 1000).toISOString()
 
-  return(
-  <>
-    <div style={{height: '720px', width: '1280px'}}>
+  //<VideoYT src={data.youtube_link_1} visible={props.hintNumber===0} opts={{height : '720px', width : '1280px', playerVars : {controls: 0, rel: 0}}}/>
+  //<VideoYT src={data.youtube_link_2} visible={props.hintNumber===0} opts={{height : '720px', width : '1280px', playerVars : {controls: 0, rel: 0}}}/>
+  //<VideoYT src={data.youtube_link_3} visible={props.hintNumber===0} opts={{height : '720px', width : '1280px', playerVars : {controls: 0, rel: 0}}}/>
+
+  /*
       <Video {...play} sources={{src: data.cloudinary_link_1, type: "application/x-mpegURL"}} visible={props.hintNumber === 0}/>
       <Video {...play} sources={{src: data.cloudinary_link_2, type: "application/x-mpegURL"}} visible={props.hintNumber === 1}/>
       <MapperHint  visible={props.hintNumber === 2} mapperName={data.mapper_name} mapperAvatar={data.mapper_avatar} mapperUrl={data.mapper_url} previousNames={data.mapper_previous_names}/>
       <StatsHint  visible={props.hintNumber === 3} artistName={data.artist} length={(data.map_length >= 600) ? time.slice(14, 19) : time.slice(15,19)} starRating={data.star_rating} language={data.language} genre={data.genre}/>
       <BackgroundHint  visible={props.hintNumber === 4} bgUrl={data.background}/>
       <Video {...play} sources={{src: data.cloudinary_link_3, type: "application/x-mpegURL"}} visible={props.hintNumber === 5}/>
+  */
+  return(
+  <>
+    <div style={{height: '720px', width: '1280px'}}>
+      <VideoYT src={data.youtube_link_1} visible={props.hintNumber===0} opts={YTOptions}/>
+      <VideoYT src={data.youtube_link_2} visible={props.hintNumber===1} opts={YTOptions}/>
+      <MapperHint  visible={props.hintNumber === 2} mapperName={data.mapper_name} mapperAvatar={data.mapper_avatar} mapperUrl={data.mapper_url} previousNames={data.mapper_previous_names}/>
+      <StatsHint  visible={props.hintNumber === 3} artistName={data.artist} length={(data.map_length >= 600) ? time.slice(14, 19) : time.slice(15,19)} starRating={data.star_rating} language={data.language} genre={data.genre}/>
+      <BackgroundHint  visible={props.hintNumber === 4} bgUrl={data.background}/>
+      <VideoYT src={data.youtube_link_3} visible={props.hintNumber===5} opts={YTOptions}/>
     </div>
   </>
   )

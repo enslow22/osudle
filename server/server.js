@@ -7,8 +7,6 @@ require('dotenv').config()
 app.use(express.json())
 app.use(cors())
 
-
-
 const db = mysql.createPool({
 	host: process.env.ENV_HOST,
 	user: process.env.ENV_USER,
@@ -19,6 +17,14 @@ const db = mysql.createPool({
 
 app.get("/api", (req, res) => {
     const q = "SELECT * FROM osumapinfo"
+    db.query(q, (err, data) => {
+        if (err) return res.json(err)
+        return res.json(data)
+    })
+})
+
+app.get("/devapi", (req, res) => {
+    const q = "SELECT * FROM devtable"
     db.query(q, (err, data) => {
         if (err) return res.json(err)
         return res.json(data)
