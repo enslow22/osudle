@@ -121,7 +121,7 @@ function Game(props) {
         </Col>
       </Row>
 
-      <Hint hintNumber={infos.hint} mapData={mapInfo}/>
+      <Hint hintNumber={infos.hint} mapData={mapInfo} won={infos.won}/>
 
       <div style={{textAlign: 'center', margin:'10px, 10px', padding:'10px 10px 10px 10px'}}>
         <HintButton id={0} onClick={changeHint} infos={infos}/>

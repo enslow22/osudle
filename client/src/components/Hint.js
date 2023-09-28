@@ -1,41 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
 // eslint-disable-next-line import/no-webpack-loader-syntax
-import videojs from '!video.js'
-import 'video.js/dist/video-js.css'
 import Image from 'react-bootstrap/Image'
 import { Button, Col, Row } from 'react-bootstrap'
 import YouTube, { YouTubeProps } from 'react-youtube'
 //import ReactCountryFlag from 'react-country-flag'
-
-const Video = (props) => {
-  const videoNode = useRef(null);
-  const [player, setPlayer] = useState(null);
-  useEffect(() => {
-    if (videoNode.current) {
-      const _player = videojs(videoNode.current, props);
-      setPlayer(_player);
-      return () => {
-        if (player !== null) {
-          player.dispose();
-        }
-      };
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (player !== null) {
-      player.pause();
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.visible])
-
-  return (
-    <div className='data-vjs-player' style={{display:(props.visible) ? 'inline' : 'none'}}>
-      <video ref={videoNode} className="video-js"></video>
-    </div>
-  );
-};
 
 const VideoYT = (props) => {
   
@@ -96,27 +64,16 @@ const MapperHint = (props) => {
 
 const BackgroundHint = (props) => {
 
+  var blurAmount = (props.blur === null ? 'blur(25px)' : 'blur(0px)')
+
   return(
-  <div className='col align-self-center p-3 mb-2 bg-body-tertiary' style={{display:(props.visible) ? 'block' : 'none'}}>
-  <Image src={props.bgUrl} fluid rounded/>
+  <div className='col align-self-center p-5 mb-2 bg-body-tertiary' style={{display:(props.visible) ? 'block' : 'none'}}>
+    <Image src={props.bgUrl} style={{filter: blurAmount}} fluid rounded/>
   </div>
   )
 }
 
 export default function Hint(props) {
-
-  var play = {
-    fill: true,
-    fluid: true,
-    autoplay: false,
-    controls: true,
-    preload: "metadata",
-    sources:
-      {
-        src: null,
-        type: "application/x-mpegURL"
-      }
-  };
 
   var YTOptions = {
     height : '720px', 
@@ -125,21 +82,8 @@ export default function Hint(props) {
   }
 
   const data = props.mapData
-  console.log(data)
   const time = new Date(data.map_length * 1000).toISOString()
 
-  //<VideoYT src={data.youtube_link_1} visible={props.hintNumber===0} opts={{height : '720px', width : '1280px', playerVars : {controls: 0, rel: 0}}}/>
-  //<VideoYT src={data.youtube_link_2} visible={props.hintNumber===0} opts={{height : '720px', width : '1280px', playerVars : {controls: 0, rel: 0}}}/>
-  //<VideoYT src={data.youtube_link_3} visible={props.hintNumber===0} opts={{height : '720px', width : '1280px', playerVars : {controls: 0, rel: 0}}}/>
-
-  /*
-      <Video {...play} sources={{src: data.cloudinary_link_1, type: "application/x-mpegURL"}} visible={props.hintNumber === 0}/>
-      <Video {...play} sources={{src: data.cloudinary_link_2, type: "application/x-mpegURL"}} visible={props.hintNumber === 1}/>
-      <MapperHint  visible={props.hintNumber === 2} mapperName={data.mapper_name} mapperAvatar={data.mapper_avatar} mapperUrl={data.mapper_url} previousNames={data.mapper_previous_names}/>
-      <StatsHint  visible={props.hintNumber === 3} artistName={data.artist} length={(data.map_length >= 600) ? time.slice(14, 19) : time.slice(15,19)} starRating={data.star_rating} language={data.language} genre={data.genre}/>
-      <BackgroundHint  visible={props.hintNumber === 4} bgUrl={data.background}/>
-      <Video {...play} sources={{src: data.cloudinary_link_3, type: "application/x-mpegURL"}} visible={props.hintNumber === 5}/>
-  */
   return(
   <>
     <div style={{height: '720px', width: '1280px'}}>
@@ -147,7 +91,7 @@ export default function Hint(props) {
       <VideoYT src={data.youtube_link_2} visible={props.hintNumber===1} opts={YTOptions}/>
       <MapperHint  visible={props.hintNumber === 2} mapperName={data.mapper_name} mapperAvatar={data.mapper_avatar} mapperUrl={data.mapper_url} previousNames={data.mapper_previous_names}/>
       <StatsHint  visible={props.hintNumber === 3} artistName={data.artist} length={(data.map_length >= 600) ? time.slice(14, 19) : time.slice(15,19)} starRating={data.star_rating} language={data.language} genre={data.genre}/>
-      <BackgroundHint  visible={props.hintNumber === 4} bgUrl={data.background}/>
+      <BackgroundHint  visible={props.hintNumber === 4} bgUrl={data.background} blur={props.won}/>
       <VideoYT src={data.youtube_link_3} visible={props.hintNumber===5} opts={YTOptions}/>
     </div>
   </>
