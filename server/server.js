@@ -8,13 +8,12 @@ require('dotenv').config()
 app.use(express.json())
 app.use(cors())
 
-
 const db = mysql.createPool({
-	host: process.env.ENV_HOST,
-	user: process.env.ENV_USER,
-	password: process.env.ENV_PASSWORD,
-	database: process.env.ENV_DATABASE,
-    port: process.env.ENV_PORT
+	host: process.env.REACT_APP_HOST,
+	user: process.env.REACT_APP_USER,
+	password: process.env.REACT_APP_PASSWORD,
+	database: process.env.REACT_APP_DATABASE,
+    port: process.env.REACT_APP_PORT
 });
 
 app.get("/api", (req, res) => {

@@ -19,6 +19,8 @@ services:
       - '5000:5000'
     depends_on:
       - db
+    env_file:
+      - .env
   web:
     container_name: osudle-web
     build: ./client
