@@ -29,7 +29,7 @@ export default function DownshiftSuggestions(props) {
     
     // Initialize the list from props
     useEffect(() => {
-        const listOfMaps = props.dataList.map(map => ({title: map.title, diff: map.diff_name, background: map.background}))
+        const listOfMaps = props.dataList.map(map => ({title: map.title, diff: map.diff_name}))
         listOfMaps.sort((a, b) => {
             var m1 = a.title.toLowerCase();
             var m2 = b.title.toLowerCase();

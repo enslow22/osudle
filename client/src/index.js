@@ -13,28 +13,35 @@ import InfoModal from './components/InfoModal';
 
 // Calculate the number of days since the start of osudle!
 //const elapsed = dayjs().diff(dayjs('2023-08-11 00:00'), 'day');
-const elapsed = dayjs().diff(dayjs('2023-09-07 19:27'), 'day', true)
+const elapsed = dayjs().diff(dayjs('2023-09-20 19:27'), 'day', true)
 
 // dailies is an araray of objects that stores all of hte daily maps
 // allData is every row in the db (each row coreresponds to an osu map)
 var dailies = null
-var allData = null
+var titles = null
 
-// Get data from backend
-await fetch('http://146.190.33.184:5000/api').then(
+await fetch('http://146.190.33.184:5000/api/titles').then(
   response => response.json()
 ).then(
   data => {
-    allData = data
-    dailies = data.filter((row) => (row.MOTD !== -1 && row.MOTD < elapsed)).sort((a, b) => {return (a.MOTD > b.MOTD) ? 1 : -1})
+    titles = data
   }
 )
+
+await fetch('http://146.190.33.184:5000/api/dailies').then(
+  response => response.json()
+).then(
+  data => {
+    dailies = data.sort((a, b) => {return (a.MOTD > b.MOTD) ? 1 : -1})
+  }
+)
+
 
 // Routes for each url
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Game backendData={allData} dailies={dailies}/>,
+    element: <Game backendData={titles} dailies={dailies}/>,
     errorElement: <h1>{"uwu sowwy we cuudent find youw page >ww<"}</h1>
   },
   {
@@ -43,7 +50,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/previous-maps/:MOTD",
-    element: <Game backendData={allData} dailies={dailies}/>
+    element: <Game backendData={titles} dailies={dailies}/>
   }
 ]);
 
