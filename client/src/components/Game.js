@@ -105,7 +105,7 @@ function Game(props) {
   return (
     (infos === null || mapInfo === null || backendData === null) ? <h1>Loading!</h1> : 
     <>
-      <Confetti run={(infos.won === true)} numberOfPieces={500} gravity={0.1} friction={0.95} recycle={false} height={window.height*2} tweenFunction={function easeOutQuad(t, b, _c, d) {var c = _c - b; return -c * (t /= d) * (t - 600) + b;}} confettiSource={{x:window.width/2 - 100, y:window.height, w:200, h:10}} initialVelocityX={70} initialVelocityY={{min: -80, max: -5}}/>
+      <Confetti run={(infos.won === true)} numberOfPieces={500} gravity={0.15} friction={0.98} recycle={false} height={window.innerHeight} tweenFunction={function easeOutQuad(t, b, _c, d) {var c = _c - b; return -c * (t /= d) * (t - 600) + b;}} confettiSource={{x:window.innerWidth/2 - 100, y:window.innerHeight, w:200, h:10}} initialVelocityX={window.innerWidth/80} initialVelocityY={{min: -1*window.innerHeight/30, max: -5}}/>
       
       <Row>
         <Col>
