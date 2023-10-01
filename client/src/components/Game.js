@@ -149,12 +149,12 @@ function QuickButtons(props){
   <>
   <div className="row justify-content-between">
     <div className="col" style={{textAlign:"start"}}>
-      {(props.dayNumber === 1) ? (<></>) : (<a href={"/previous-maps/"+(props.dayNumber-1).toString()}>
+      {(props.dayNumber === 1) ? (<></>) : (<a href={"/"+(props.dayNumber-1).toString()}>
         <button className="btn btn-primary">Previous Day</button>
       </a>) }
     </div>
     <div className="col" style={{textAlign:"end"}}>
-      {(props.dayNumber === props.maxDays) ? (<></>) : (<a href={"/previous-maps/"+(props.dayNumber - -1).toString()}>
+      {(props.dayNumber === props.maxDays) ? (<></>) : (<a href={"/"+(props.dayNumber - -1).toString()}>
         <button className="btn btn-primary">Next Day</button>
       </a>)}
     </div>

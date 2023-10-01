@@ -29,7 +29,7 @@ export default function InfoModal(props) {
 
         <Modal show={showModals[0]} onHide={closeModal} size='md'>
             <Modal.Header closeButton>
-                <Modal.Title id="info">
+                <Modal.Title id="How To Play">
                     How to Play
                 </Modal.Title>
             </Modal.Header>
