@@ -69,7 +69,7 @@ export default function PreviousMaps(props) {
 
   return (
     <div className='row justify-content-md-center'>
-      <button className='col-5 btn btn-primary m-3 p-1' onClick={() => {setHidden(!hidden)}}>{(hidden) ? 'Show Maps' : 'Hide Maps'}</button>
+      <button className='col-5 btn btn-primary m-3 p-1' onClick={() => {setHidden(!hidden)}}>{(hidden) ? 'Show Thumbnails' : 'Hide Thumbnails'}</button>
       <div className='col-7 list-group'>
         {dayList}
       </div>

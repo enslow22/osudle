@@ -107,14 +107,15 @@ function Game(props) {
     <>
       <Confetti run={(infos.won === true)} numberOfPieces={500} gravity={0.15} friction={0.98} recycle={false} height={window.innerHeight} tweenFunction={function easeOutQuad(t, b, _c, d) {var c = _c - b; return -c * (t /= d) * (t - 600) + b;}} confettiSource={{x:window.innerWidth/2 - 100, y:window.innerHeight, w:200, h:10}} initialVelocityX={window.innerWidth/80} initialVelocityY={{min: -1*window.innerHeight/30, max: -5}}/>
       
-      <Row>
-        <Col>
-          <h1 className='text-primary'>Map #{dayNumber}</h1>
+      <Row className='justify-content-between'>
+        <Col md='auto' className='bg-body-tertiary rounded-3'>
+          <h1 className='text-primary mx-auto d-inline-flex'>Map #{dayNumber}</h1>
         </Col>
-        <Col style={{textAlign:'end'}}>
-          <h1 className='text-primary'>Score: {6-infos.score}</h1>
+        <Col md='auto' className='bg-body-tertiary rounded-3' style={{textAlign:'end'}}>
+          <h1 className='text-primary mx-auto d-inline-flex'>Score: {6-infos.score}</h1>
         </Col>
       </Row>
+      <br></br>
 
       <Hint hintNumber={infos.hint} mapData={mapInfo} won={infos.won}/>
 

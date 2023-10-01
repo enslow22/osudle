@@ -30,35 +30,55 @@ const VideoYT = (props) => {
 }
 
 const StatsHint = (props) => {
+
+  const InfoRow = (key, value) => {
+    return(
+    <Row className='justify-content-center'>
+      <Col className='text-end'>
+      <h2 className='d-inline-flex p-1' style={{fontSize: '45px'}}>{key}:</h2>
+      </Col>
+      <Col>
+      <h2 className='d-inline-flex p-1' style={{fontSize: '45px'}}>{value}</h2>
+      </Col>
+    </Row>)
+  }
+
   return(
-  <div className='col align-self-center p-3 mb-2 bg-body-tertiary' style={{display:(props.visible) ? 'block' : 'none'}}>
-    <h2>Artist: {props.artistName}</h2>
-    <h2>Map Length: {props.length}</h2>
-    <h2>Star Rating: {props.starRating}</h2>
-    <h2>Language: {props.language}</h2>
-    <h2>Genre: {props.genre}</h2>
-  </div>
-  )
+  <Row className='p-3 mb-2 bg-body-tertiary' style={{display:(props.visible) ? 'block' : 'none'}}>
+    {InfoRow('Artist', props.artistName)}
+    {InfoRow('Map Length', props.length)}
+    {InfoRow('Star Rating', props.starRating+" \u2606 ")}
+    {InfoRow('Language', props.language)}
+    {InfoRow('Genre', props.genre  )}
+  </Row>)
+
 }
 
 const MapperHint = (props) => {
   return(
-    <Row className='p-3 mb-2 bg-body-tertiary' fluid="md" style={{display:(props.visible) ? '' : 'none'}}>
-      <Col md="auto">
-        <Image src={props.mapperAvatar} fluid rounded/>
-      </Col>
-      <Col>
-        <h1 style={{fontSize:"80px"}}>{props.mapperName}</h1>
-      </Col>
-      <Col md="auto">
+    <>
+    <Row className='p-2 mb-1 bg-body-tertiary' fluid="md" style={{display:(props.visible) ? '' : 'none'}}>
+      <Row>
+        <Col><h1 style={{fontSize:"45px"}}>Mapper:</h1></Col>
+        <Col md="auto">        
         <Button variant="outline-secondary" size='md' href={props.mapperUrl} target="_blank">
           <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className="bi bi-link-45deg" viewBox="0 0 16 16">
           <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/>
           <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z"/>
           </svg>
-        </Button>
-      </Col>
-    </Row>
+        </Button></Col>
+      </Row>
+      <Row className='pb-4 justify-content-md-center'>
+        <Col md='auto'>
+          <Image src={props.mapperAvatar} fluid rounded/>
+        </Col>
+      </Row>
+      <Row className='justify-content-md-center' fluid="md">
+        <Col md='auto' className='bg-body-secondary rounded-3'>
+          <h1 className='mx-auto d-inline-flex p-2' style={{fontSize:"80px"}}>{props.mapperName}</h1>
+        </Col>
+      </Row>
+    </Row></>
   )
 }
 

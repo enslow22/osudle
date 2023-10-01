@@ -22,10 +22,10 @@ export default function InfoModal(props) {
 
     return (
         <>
-        <Button variant='primary' onClick={function() {openModal(0)}}>
-            Info
+        <Button variant='primary' className='btn-lg' onClick={function() {openModal(0)}}>
+            How To Play
         </Button>&emsp;
-        <Button variant='primary' onClick={function() {openModal(1)}}>Me!</Button>
+        <Button variant='primary' className='btn-lg' onClick={function() {openModal(1)}}>Me!</Button>
 
         <Modal show={showModals[0]} onHide={closeModal} size='md'>
             <Modal.Header closeButton>
