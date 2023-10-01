@@ -20,7 +20,7 @@ const elapsed = dayjs().diff(dayjs('2023-09-20 19:27'), 'day', true)
 var dailies = null
 var titles = null
 
-await fetch('http://146.190.33.184:5000/api/titles').then(
+await fetch('api/titles/').then(
   response => response.json()
 ).then(
   data => {
@@ -28,7 +28,7 @@ await fetch('http://146.190.33.184:5000/api/titles').then(
   }
 )
 
-await fetch('http://146.190.33.184:5000/api/dailies').then(
+await fetch('api/dailies/').then(
   response => response.json()
 ).then(
   data => {
@@ -49,7 +49,7 @@ const router = createBrowserRouter([
     element: <PreviousMaps dailies={dailies}/>,
   },
   {
-    path: "/previous-maps/:MOTD",
+    path: "/:MOTD",
     element: <Game backendData={titles} dailies={dailies}/>
   }
 ]);

@@ -44,7 +44,7 @@ function MapLinkFromLocal(props) {
 
   return(
       <ListGroup.Item action>
-        <a className='text-decoration-none text-center' href={"previous-maps/"+props.MOTD}>
+        <a className='text-decoration-none text-center' href={"/"+props.MOTD}>
           <Row className='justify-content-md-center align-items-center' style={{height: '70px'}}>
             <Col className='fs-3'>
               Map Number {props.MOTD}
