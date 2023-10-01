@@ -1,4 +1,5 @@
 import { ListGroup, Row, Col, OverlayTrigger, Popover } from 'react-bootstrap'
+import { useState } from 'react'
 
 function MapLinkFromLocal(props) {
 
@@ -39,7 +40,7 @@ function MapLinkFromLocal(props) {
 
   if (saveData !== null) {
     col2 = scores(saveData.guesses.length,saveData.won)
-    col3 = saveData.won !== null ? <OverlayTrigger placement='right' delay={{ show: 100, hide: 400 }} overlay={mapPreview}><img alt='' className='img-thumbnail' src={props.mapBG}></img></OverlayTrigger> : <>Not Finished!</>
+    col3 = saveData.won === null ? (<>Not Finished!</>) : (props.hidden) ? <>Click to Show</> : (<OverlayTrigger placement='right' delay={{ show: 100, hide: 400 }} overlay={mapPreview}><img alt='' className='img-thumbnail' src={props.mapBG}></img></OverlayTrigger>)
   }
 
   return(
@@ -63,10 +64,13 @@ function MapLinkFromLocal(props) {
 
 export default function PreviousMaps(props) {
 
-  const dayList = props.dailies.map((mapinfo, index) => {return <MapLinkFromLocal key={mapinfo.map_id} MOTD={mapinfo.MOTD} mapBG={mapinfo.background} title={mapinfo.title} link={mapinfo.map_url}/>})
+  const [hidden, setHidden] = useState(true)
+
+  const dayList = props.dailies.map((mapinfo, index) => {return <MapLinkFromLocal key={mapinfo.map_id} MOTD={mapinfo.MOTD} mapBG={mapinfo.background} title={mapinfo.title} link={mapinfo.map_url} hidden={hidden}/>})
 
   return (
     <div className='row justify-content-md-center'>
+      <button className='col-5 btn btn-primary m-3 p-1' onClick={() => {setHidden(!hidden)}}>{(hidden) ? 'Show Maps' : 'Hide Maps'}</button>
       <div className='col-7 list-group'>
         {dayList}
       </div>
