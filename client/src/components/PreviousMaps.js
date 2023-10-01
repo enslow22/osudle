@@ -9,7 +9,6 @@ function MapLinkFromLocal(props) {
     <Popover id='popover-basic' key={props.id}>
       <Popover.Body>
         <a href={props.link} target="_blank" rel='noopener noreferrer'><h4>{props.title}</h4></a>
-        
       </Popover.Body>
     </Popover>)
 
@@ -40,7 +39,7 @@ function MapLinkFromLocal(props) {
 
   if (saveData !== null) {
     col2 = scores(saveData.guesses.length,saveData.won)
-    col3 = saveData.won === null ? (<>Not Finished!</>) : (props.hidden) ? <>Click to Show</> : (<OverlayTrigger placement='right' delay={{ show: 100, hide: 400 }} overlay={mapPreview}><img alt='' className='img-thumbnail' src={props.mapBG}></img></OverlayTrigger>)
+    col3 = saveData.won === null ? (<>Not Finished!</>) : (props.hidden) ? <>Spoilers!</> : (<OverlayTrigger placement='right' delay={{ show: 100, hide: 400 }} overlay={mapPreview}><img alt='' className='img-thumbnail' src={props.mapBG}></img></OverlayTrigger>)
   }
 
   return(
