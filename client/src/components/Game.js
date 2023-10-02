@@ -129,7 +129,7 @@ function Game(props) {
         {(infos.won === null) ? (<SkipButton onClick={submitAnswer}/>) : (<></>)}
       </div>
 
-      {(infos.won === null) ? (<DownshiftSuggestions dataList={backendData} onClick={submitAnswer} />) : (<GameEnd winner={infos.won} mapInfo={mapInfo}/>)}
+      {(infos.won === null) ? (<DownshiftSuggestions dataList={backendData} onClick={submitAnswer} />) : (<GameEnd winner={infos.won} mapInfo={mapInfo} infos={infos}/>)}
       
       <br></br>
       {(getGuessList().length !== 0) ? (
