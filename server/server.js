@@ -27,7 +27,7 @@ app.get("/api", (req, res) => {
 })
 
 app.get("/api/dailies", (req, res) => {
-    const elapsed = parseInt(dayjs().diff(dayjs('2023-09-25 19:27'), 'day', true))
+    const elapsed = parseInt(dayjs().diff(dayjs('2023-09-21 19:27'), 'day', true))
     const q = `SELECT * FROM osumapinfo WHERE MOTD != -1 AND MOTD <= ${elapsed}`
     db.query(q, (err, data) => {
         if (err) return res.json(err)
