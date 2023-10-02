@@ -4,4 +4,4 @@ osudle! is a osu guessing game heavily inspired by guessthe.game. The objective 
 
 A new map comes out every day at 7:27pm PST.
 
-You can access this project and try it yourself at https://osudle.com
+You can access this project and try it yourself at https://www.osudle.com
