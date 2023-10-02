@@ -4,7 +4,9 @@ const app = express()
 const mysql = require('mysql2')
 const dayjs = require('dayjs')
 require('dotenv').config()
-
+var timezone = require('dayjs/plugin/timezone')
+dayjs.extend(timezone)
+dayjs.tz.setDefault("America/Los_Angeles")
 app.use(express.json())
 app.use(cors())
 
@@ -25,8 +27,8 @@ app.get("/api", (req, res) => {
 })
 
 app.get("/api/dailies", (req, res) => {
-    const elapsed = dayjs().diff(dayjs('2023-09-20 19:27'), 'day', true)
-    const q = `SELECT * FROM osumapinfo WHERE MOTD != -1 AND MOTD < ${elapsed}`
+    const elapsed = parseInt(dayjs().diff(dayjs('2023-09-25 19:27'), 'day', true))
+    const q = `SELECT * FROM osumapinfo WHERE MOTD != -1 AND MOTD <= ${elapsed}`
     db.query(q, (err, data) => {
         if (err) return res.json(err)
         return res.json(data)
