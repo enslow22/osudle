@@ -7,12 +7,16 @@ const mysql = require('mysql2')
 const dayjs = require('dayjs')
 
 require('dotenv').config()
+var utc = require('dayjs/plugin/utc')
 var timezone = require('dayjs/plugin/timezone')
+dayjs.extend(utc)
 dayjs.extend(timezone)
-dayjs.tz.setDefault("America/Los_Angeles")
+
+const timeZone = dayjs.tz.guess()
 
 app.use(express.json())
 app.use(cors())
+// TODO: Set cache to be equal to time left in day
 app.use(cache('5 minutes'))
 
 const db = mysql.createPool({
@@ -20,12 +24,14 @@ const db = mysql.createPool({
 	user: process.env.REACT_APP_USER,
 	password: process.env.REACT_APP_PASSWORD,
 	database: process.env.REACT_APP_DATABASE,
-    port: process.env.REACT_APP_PORT
+        port: process.env.REACT_APP_PORT
 });
 
 app.get("/api/dailies", (req, res) => {
-    const elapsed = parseInt(dayjs().diff(dayjs('2023-09-21 19:27'), 'day', true))
-    const q = `SELECT * FROM osumapinfo WHERE MOTD != -1 AND MOTD <= ${elapsed}`
+    const today = dayjs().tz('America/Los_Angeles');
+    const start = dayjs('2023-09-21 19:27');
+    const elapsed = parseInt(today.diff(start, 'day', true))
+    const q = `SELECT * FROM osumapinfo WHERE MOTD != -1 AND MOTD <= ${elapsed};`
     db.query(q, (err, data) => {
         if (err) return res.json(err)
         return res.json(data)
