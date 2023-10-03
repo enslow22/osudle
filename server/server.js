@@ -5,6 +5,7 @@ const app = express()
 const cache = apicache.middleware
 const mysql = require('mysql2')
 const dayjs = require('dayjs')
+const schedule = require('node-schedule');
 
 require('dotenv').config()
 var utc = require('dayjs/plugin/utc')
@@ -12,33 +13,47 @@ var timezone = require('dayjs/plugin/timezone')
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
-const timeZone = dayjs.tz.guess()
-
 app.use(express.json())
 app.use(cors())
-// TODO: Set cache to be equal to time left in day
-app.use(cache('5 minutes'))
 
 const db = mysql.createPool({
 	host: process.env.REACT_APP_HOST,
 	user: process.env.REACT_APP_USER,
 	password: process.env.REACT_APP_PASSWORD,
 	database: process.env.REACT_APP_DATABASE,
-        port: process.env.REACT_APP_PORT
+    port: process.env.REACT_APP_PORT
+});
+
+// Get daily maps then grab new daily maps at start of new day
+var dailies = null
+
+function setDailies() {
+    const today = dayjs().tz('PST8PDT');
+    const start = dayjs('2023-09-21 19:27');
+    const elapsed = parseInt(today.diff(start, 'day', true))
+    const q = `SELECT * FROM osumapinfo WHERE MOTD != -1 AND MOTD <= ${elapsed} ORDER BY MOTD;`
+    db.promise().query(q).then((data) => {
+        dailies = data[0];
+        console.log("Today's map is " + dailies[dailies.length-1].title)});
+}
+
+setDailies()
+
+const rule = new schedule.RecurrenceRule();
+rule.hour = 19;
+rule.minute = 27;
+rule.tz = 'PST8PDT';
+
+const job = schedule.scheduleJob(rule, function(){
+    console.log("WYSI !!!!!!!!!!!!!!!!!! WYSI");
+    setDailies()
 });
 
 app.get("/api/dailies", (req, res) => {
-    const today = dayjs().tz('America/Los_Angeles');
-    const start = dayjs('2023-09-21 19:27');
-    const elapsed = parseInt(today.diff(start, 'day', true))
-    const q = `SELECT * FROM osumapinfo WHERE MOTD != -1 AND MOTD <= ${elapsed};`
-    db.query(q, (err, data) => {
-        if (err) return res.json(err)
-        return res.json(data)
-    })
+    return res.json(dailies)
 });
 
-app.get("/api/titles", (req, res) =>{
+app.get("/api/titles", cache('10 minutes') ,(req, res) =>{
     const q = "SELECT title, diff_name FROM osumapinfo"
     db.query(q, (err, data) => {
         if (err) return res.json(err)
