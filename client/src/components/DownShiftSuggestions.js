@@ -61,7 +61,7 @@ export default function DownshiftSuggestions(props) {
         <>
             <div className='grid d-flex justify-content-center gap-1'> 
                 <input  placeholder='Start Typing...' {...getInputProps({})}/>
-                <button className={"btn btn-primary"} onClick={(e) => {onClickHandler(e, selectedItem)}}>Submit</button>
+                <button className={"btn btn-primary btn-lg"} onClick={(e) => {onClickHandler(e, selectedItem)}}>Submit</button>
             </div>
             <div className='row position-relative'>
                 <div className='col'>

@@ -57,18 +57,24 @@ export default function GameEnd(props) {
 
     // Return a game-end message to the player and the time until the next map unlocks
     return (
-        <div className='row justify-content-center flex-nowrap'>
-            <div className='col bg-body-tertiary d-flex align-items-center'>
-                {(props.winner) ? (<img className='rounded mx-auto d-block' src={require('../3x.webp')} style={{width: '150px', height: '150px'}} alt='WYSI'></img>) : (<></>)}
-            </div>
-            <div className='col-md-auto bg-body-tertiary text-center pb-1'>
-            <div><h1>{(props.winner) ? ("Congrats!") : ("Better luck next time!")} The answer was:</h1>
-            <h1 className='m-4'><a href={props.mapInfo.map_url} target="_blank" rel='noopener noreferrer'>{props.mapInfo.title} - [{props.mapInfo.diff_name}]</a></h1></div>
-            <button className='btn btn-primary btn-lg' onClick={(e) => {navigator.clipboard.writeText("osudle! Day "+props.mapInfo.MOTD+": "+boxes().join('')); setCopied(true)}}>{(copied) ? <span>Copied to Clipboard!</span> : <span>Share Score &nbsp;{shareIcon()}</span>}</button>
-            {(time === 0) ? (<h2>Next osudle! in: {"24:00:00"}</h2>) : (<h2 className='py-2'>Next osudle! in: {dayjs(time + 8*3600*1000).format("HH:mm:ss")} </h2>) }
-            </div>
-            <div className='col bg-body-tertiary d-flex align-items-center'>
-                {(props.winner) ? (<img className='rounded mx-auto d-block' src={require('../3x.webp')} style={{width: '150px', height: '150px'}} alt='WYSI'></img>) : (<></>)}
+        <div className='bg-body-tertiary rounded-4 text-center'>
+            <h1 className='d-inline-flex text-center'>{(props.winner) ? ("Congrats!") : ("Better luck next time!")} The answer was:</h1>
+            <br></br>
+            <h1 className='m-1 mb-3 d-inline-flex mx-auto'><a href={props.mapInfo.map_url} target="_blank" rel='noopener noreferrer'>{props.mapInfo.title} - [{props.mapInfo.diff_name}]</a></h1>
+
+            <div className='row justify-content-center flex-nowrap align-items-center pb-2'>
+                <div className='col d-flex align-items-center'>
+                    {(props.winner) ? (<img className='rounded-4 d-block mx-auto pb-2' src={require('../3x.webp')} style={{width:'60%'}} alt='WYSI'></img>) : (<></>)}
+                </div>
+                <div className='col-md-4 pb-1'>
+
+                    {(time === 0) ? (<h2>Next osudle! in: {"24:00:00"}</h2>) : (<h2 className='py-2'>Next osudle! in: {dayjs(time + 8*3600*1000).format("HH:mm:ss")} </h2>) }
+                    <button className='btn btn-primary btn-lg' onClick={(e) => {navigator.clipboard.writeText("osudle! Day "+props.mapInfo.MOTD+": "+boxes().join('')); setCopied(true)}}>{(copied) ? <span>Copied to Clipboard!</span> : <span>Share Score &nbsp;{shareIcon()}</span>}</button>
+                    
+                </div>
+                <div className='col d-flex align-items-center'>
+                    {(props.winner) ? (<img className='rounded-4 d-block mx-auto pb-2' src={require('../3x.webp')} style={{width:'60%'}} alt='WYSI'></img>) : (<></>)}
+                </div>
             </div>
         </div>
     )

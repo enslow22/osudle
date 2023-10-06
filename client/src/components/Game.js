@@ -13,15 +13,11 @@ import Confetti from 'react-confetti'
 // change input submit answer box to empty after clicking submit
 
 // LESS IMPORTANT STUFF //
-// Add a windowsize hook for the confetti
 // add a dt button
-// Collect and download user scores for data analysis later?
 // Add country code to db to include in Mapper Hint
 // Add popovers for previous guesses (include map bg, title, and diff)
 // Add popovers for the mapper's previous names
-// Maybe change Buttons into a tabs component from bootstrap?
-// Turn all Hint Buttons into a button group (Then we can style them easier)
- 
+// Have users enter their name and then write api post paths
 /**
  * @param {object} props Component props
  * @param {Array} props.backendData An array of objects where each element represents an osu map
@@ -99,27 +95,29 @@ function Game(props) {
 
   // A list that stores all of the user's previous guesses
   const getGuessList = () => {
-    return(infos.guesses.map((guess, index) => {return <li className="row text-primary border-bottom" key={index}><Col md='auto'>{guess.title}</Col><Col className='pb-2 text-end'>{correctIcon(guess.title)}</Col></li>}))
+    return(infos.guesses.map((guess, index) => {return <li className={"row text-primary justify-content-between border-" + (index!==0 ? "top" : "")} key={index}><Col md='auto' className='d-flex justify-content-center'>{guess.title}</Col><Col md='auto' className='py-2 d-flex justify-content-center'>{correctIcon(guess.title)}</Col></li>}))
   }
 
   return (
     (infos === null || mapInfo === null || backendData === null || mapInfo === undefined) ? <h1>Loading!</h1> : 
     <>
-      <Confetti run={(infos.won === true)} numberOfPieces={500} gravity={0.15} friction={0.98} recycle={false} height={window.innerHeight} tweenFunction={function easeOutQuad(t, b, _c, d) {var c = _c - b; return -c * (t /= d) * (t - 600) + b;}} confettiSource={{x:window.innerWidth/2 - 100, y:window.innerHeight, w:200, h:10}} initialVelocityX={window.innerWidth/80} initialVelocityY={{min: -1*window.innerHeight/30, max: -5}}/>
+      <Confetti run={(infos.won === true)} numberOfPieces={150} gravity={0.15} friction={0.98} recycle={false} height={window.innerHeight} tweenFunction={function easeOutQuad(t, b, _c, d) {var c = _c - b; return -c * (t /= d) * (t - 600) + b;}} confettiSource={{x:window.innerWidth/2 - 100, y:window.innerHeight, w:200, h:10}} initialVelocityX={window.innerWidth/80} initialVelocityY={{min: -1*window.innerHeight/30, max: -5}}/>
       
-      <Row className='justify-content-between'>
-        <Col md='auto' className='bg-body-tertiary rounded-3'>
-          <h1 className='text-primary mx-auto d-inline-flex'>Map #{dayNumber}</h1>
+      <Row className='justify-content-between align-center'>
+        <Col md={'auto'} className='bg-body-tertiary rounded-3 text-center mt-2'>
+          <h1 className='text-primary text-nowrap'>Map #{dayNumber}</h1>
         </Col>
-        <Col md='auto' className='bg-body-tertiary rounded-3' style={{textAlign:'end'}}>
-          <h1 className='text-primary mx-auto d-inline-flex'>Score: {6-infos.score}</h1>
+        <Col md={'auto'} className='bg-body-tertiary rounded-3 text-center mt-2'>
+          <h1 className='text-primary text-nowrap'>Score: {6-infos.score}</h1>
         </Col>
       </Row>
       <br></br>
-
-      <Hint hintNumber={infos.hint} mapData={mapInfo} won={infos.won}/>
-
-      <div style={{textAlign: 'center', margin:'10px, 10px', padding:'10px 10px 10px 10px'}}>
+      
+      <Row className='justify-content-center'>
+        <Hint hintNumber={infos.hint} mapData={mapInfo} won={infos.won}/>
+      </Row>
+      <br></br>
+      <Row className='justify-content-center'>
         <HintButton id={0} onClick={changeHint} infos={infos}/>
         <HintButton id={1} onClick={changeHint} infos={infos}/>
         <HintButton id={2} onClick={changeHint} infos={infos}/>
@@ -127,8 +125,8 @@ function Game(props) {
         <HintButton id={4} onClick={changeHint} infos={infos}/>
         <HintButton id={5} onClick={changeHint} infos={infos}/>
         {(infos.won === null) ? (<SkipButton onClick={submitAnswer}/>) : (<></>)}
-      </div>
-
+      </Row>
+      <br></br>
       {(infos.won === null) ? (<DownshiftSuggestions dataList={backendData} onClick={submitAnswer} />) : (<GameEnd winner={infos.won} mapInfo={mapInfo} infos={infos}/>)}
       
       <br></br>
@@ -137,9 +135,10 @@ function Game(props) {
       
       <h1 className="text-primary" style={{fontSize:'80px'}}>Guesses</h1>
       <Row className='p-5 justify-content-md-center text-center'>
-        {(<ol style={{listStyle:'none', fontSize:'40px'}} className='bg-body-tertiary'>{getGuessList()}</ol>)}
+        {(<ol style={{listStyle:'none', fontSize:'40px'}} className='bg-body-tertiary rounded-3 pb-1'>{getGuessList()}</ol>)}
       </Row></>) : (null)}
       <QuickButtons dayNumber={dayNumber} maxDays={props.dailies.length}/>
+      <br></br>
     </>
   )
 }

@@ -1,39 +1,82 @@
 import React, { useState } from 'react'
-import { Modal, Button, Tooltip, OverlayTrigger } from 'react-bootstrap'
+import { Modal, Button, Tooltip, OverlayTrigger, Nav, Form } from 'react-bootstrap'
 
 export default function InfoModal(props) {
 
-    const [showModals, setShowModals] = useState([false, false])
+    const [showModals, setShowModals] = useState([false, false, false])
+    const [sugFields, setSugFields] = useState({mapId: '', userId: ''})
+
+
     const openModal = (num) => {
-        setShowModals(num === 0 ? [true, false] : [false, true])
+        setShowModals(num === 0 ? [true, false, false] : num === 1 ? [false, true, false] : [false, false, true])
     }
     const closeModal = () => {
         setShowModals([false, false])
     }
-
     const defaultColor = (e) => {e.target.style.fill = 'white'}
     const hoverColor = (e) => {e.target.style.fill = '#ffa4d6';}
-
     const discordName = (props) => (
         <Tooltip {...props}>
             Discord ID: enslow
         </Tooltip>
-    )   
+    )
+
+    async function postSuggestion(data) {
+        const res = await fetch('api/submitTip/', {
+            method: "POST",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            redirect: "manual",
+            referrerPolicy: 'same-origin',
+            body: JSON.stringify(data),
+        });
+        if (res.status === 200) {
+            alert('Thank you for your contribution!')
+            closeModal()
+        }
+        else if (res.status === 500) {
+            alert('Something went wrong, submission may be closed for now :(')
+        }
+    }
+
+    function isInt(value) {
+        return !isNaN(value) && parseInt(value) == value && !isNaN(parseInt(value, 10));
+    }
+
+    async function handleSubmit(e) {
+        e.preventDefault();
+
+        // Ensure both fields are integers
+        const mapId = sugFields.mapId
+        const userId = (sugFields.userId === '') ? '0' : sugFields.userId
+        if (isInt(mapId) && isInt(userId)) {  
+            await postSuggestion({mapId: mapId, userId: userId})
+            setSugFields({mapId: '', userId: ''})
+        }
+        else {
+            alert("One or more of your inputs was not a valid integer")
+        }
+    }
 
     return (
         <>
-        <Button variant='primary' className='btn-lg' onClick={function() {openModal(0)}}>
-            How To Play
-        </Button>&emsp;
-        <Button variant='primary' className='btn-lg' onClick={function() {openModal(1)}}>Me!</Button>
-
+        <Nav>
+            <Nav.Link variant='primary' className='mx-1 my-1' onClick={() => {openModal(0)}}><h2>How To Play</h2></Nav.Link>
+            <Nav.Link variant='primary' className='mx-1 my-1' onClick={() => {openModal(2)}}><h2>Suggest</h2></Nav.Link>
+            <Nav.Link variant='primary' className='mx-1 my-1' onClick={() => {openModal(1)}}><h2>Me!</h2></Nav.Link>
+        </Nav>
+        
         <Modal show={showModals[0]} onHide={closeModal} size='md'>
             <Modal.Header closeButton>
                 <Modal.Title id="How To Play">
                     How to Play
                 </Modal.Title>
             </Modal.Header>
-            <Modal.Body style={{fontSize:'18px'}}>
+            <Modal.Body className='fs-5'>
                 <p>You have 6 chances to deduce the title of the map based on the hints provided! Each incorrect guess unlocks the next hint.</p>
                 <p>See if you can guess the map without hearing the song!</p>
                 <p>Every map featured in this game has at least 100k plays.</p>
@@ -47,7 +90,7 @@ export default function InfoModal(props) {
                     About Me
                 </Modal.Title>
             </Modal.Header>
-            <Modal.Body style={{fontSize:'18px'}}>
+            <Modal.Body className='fs-5'>
                 <p>I'm enslow, and I built this as a side project for fun. It's heavily inspired by <a href='http://www.guessthe.game'>guessthe.game</a></p>
                 <p>I plan on maintaining this for a while, so if you have suggestions (features, bugs, maps, etc.) feel free to send me a message!</p>
                 <h1>
@@ -82,6 +125,36 @@ export default function InfoModal(props) {
                 </h1>
             </Modal.Body>
             
+        </Modal>
+        <Modal show={showModals[2]} onHide={closeModal} size='md'>
+            <Modal.Header closeButton>
+                <Modal.Title id="Suggestions">
+                    Suggestions Box
+                </Modal.Title>
+            </Modal.Header>
+            <Form method='POST' onSubmit={(e)=>{handleSubmit(e);}}>
+                <Modal.Body>
+                    <h5>Feel free to use this so suggest any maps you would like to see featured in osudle!</h5>
+
+                        <Form.Group controlId='link' className='pb-2'>
+                            <Form.Label>Map Id:</Form.Label>
+                            <Form.Control type={'text'} placeholder='ex: 4148965' autoFocus onChange={(e) => setSugFields({...sugFields, mapId: e.target.value})}/>
+                        </Form.Group>
+                        <Form.Group controlId='userId'>
+                            <Form.Label>Your osu! profile ID (optional):</Form.Label>
+                            <Form.Control type={'text'} placeholder='ex: 10651409' onChange={(e) => setSugFields({...sugFields, userId: e.target.value})}/>
+                        </Form.Group>
+                    
+                </Modal.Body>
+                <Modal.Footer>
+                        <Button variant="secondary" onClick={closeModal}>
+                            Close
+                        </Button>
+                        <Button variant="primary" type='submit'>
+                            Save Changes
+                        </Button>
+                </Modal.Footer>
+            </Form>
         </Modal>
         </>
     )

@@ -15,17 +15,19 @@ function MapLinkFromLocal(props) {
 
     let scoreList = []
 
+    var boxParams = 'col rounded-4 m-1 '
+    var boxStyle = {paddingBottom:"30%", maxHeight:'0px'}
     for (var i = 0; i < guesses; i++) {
-      scoreList.push(<div className='bg-danger rounded-2 d-inline px-3 py-2 m-1'></div>)
+      scoreList.push(<div style={boxStyle} className={boxParams+'bg-danger'}></div>)
     }
 
     if (won) {
       scoreList.pop()
-      scoreList.push(<div className='bg-success rounded-2 d-inline px-3 py-2 m-1'></div>)
+      scoreList.push(<div style={boxStyle} className={boxParams+'bg-success'}></div>)
     }
 
     while (scoreList.length < 6) {
-      scoreList.push(<div className='bg-secondary rounded-2 d-inline px-3 py-2 m-1'></div>)
+      scoreList.push(<div style={boxStyle} className={boxParams+'bg-secondary'}></div>)
     }
 
     return(
@@ -34,29 +36,40 @@ function MapLinkFromLocal(props) {
   }
 
   var col2 = scores(0, false)
-  var col3 = <>Not Played!</>
+  var col3 = <span className='fs-3'>Not Played!</span>
 
   if (saveData !== null) {
     col2 = scores(saveData.guesses.length,saveData.won)
-    col3 = saveData.won === null ? (<>Not Finished!</>) : (props.hidden) ? <>Spoilers!</> : (<OverlayTrigger placement='right' delay={{ show: 100, hide: 400 }} overlay={mapPreview}><img alt='' className='img-thumbnail' src={props.mapBG}></img></OverlayTrigger>)
+    col3 = saveData.won === null ? (<span className='fs-3'>Not Finished!</span>) : (props.hidden) ? <span className='fs-3'>Spoilers!</span> : (<OverlayTrigger placement='right' delay={{ show: 100, hide: 400 }} overlay={mapPreview}><img alt='' className='img-thumbnail img-fluid' src={props.mapBG}></img></OverlayTrigger>)
   }
 
   return(
-      <ListGroup.Item action>
-        <a className='text-decoration-none text-center' href={"/"+props.MOTD}>
-          <Row className='justify-content-md-center align-items-center' style={{height: '70px'}}>
-            <Col className='fs-3'>
-              Map Number {props.MOTD}
-            </Col>
-            <Col>
-              {col2}
-            </Col>
-            <Col className='fs-3 align-items-center'>
-              {col3}
-            </Col>
-          </Row>
-        </a>
-      </ListGroup.Item>
+    <ListGroup.Item action>
+      <a className='text-decoration-none text-center' href={"/"+props.MOTD}>
+        <Row className='justify-content-between align-items-center flex-nowrap' style={{minHeight: '70px'}}>
+          <Col className='fs-4 col-md-4'>
+            Map Number {props.MOTD}
+          </Col>
+          <Col className='col-md-4'>
+            <Row>
+              <Col md={6}>
+                <Row className='flex-nowrap'>
+                  {col2.slice(0,3)}
+                </Row>
+              </Col>
+              <Col md={6}>
+                <Row className='flex-nowrap'>
+                  {col2.slice(3,6)}
+                </Row>
+              </Col>
+            </Row>
+          </Col>
+          <Col className='fs-4 col-md-4'>
+            {col3}
+          </Col>
+        </Row>
+      </a>
+    </ListGroup.Item>
   )
 }
 
@@ -134,27 +147,28 @@ export default function PreviousMaps(props) {
 
   return (
     (saveDataList.length == 0) ? <></> :
-    <div className='row justify-content-md-center'>
+    <><div className='row justify-content-center'>
       <button className='col-3 btn btn-primary m-3 p-1' onClick={() => {handleOpen();}}>Export Scores</button>
       <button className='col-3 btn btn-primary m-3 p-1' onClick={() => {setHidden(!hidden)}}>{(hidden) ? 'Show Thumbnails' : 'Hide Thumbnails'}</button>
-      <div className='col-7 list-group'>
-        {props.dailies.map((mapinfo, index) => {return <MapLinkFromLocal key={mapinfo.map_id} save={saveDataList[index]} MOTD={mapinfo.MOTD} mapBG={mapinfo.background} title={mapinfo.title} link={mapinfo.map_url} hidden={hidden}/>})}
       </div>
-      <div style={{height:'50px'}}></div>
-      <Modal size='sm' scrollable='true' show={modalView} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Your Scores:</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p style={{fontSize : "18px"}}>It takes you {mean} guesses on average to figure out the map.</p>
-          {scoreList.map((score, index) => {return<p className='text-center' style={{fontSize: "22px"}} key={index}>{score}</p>})}
-        </Modal.Body>
-        <Modal.Footer className='justify-content-center'>
-          <Button variant="primary" onClick={() => {navigator.clipboard.writeText("Average guesses: " + parseFloat(mean) + "\n" + scoreList.join('\n')); setCopied(true)}}>
-              {copied ? "Copied!" : "Copy to Clipboard" }
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </div>
+      <div className='row justify-content-md-center'>
+        <div className='col list-group pb-3'>
+          {props.dailies.map((mapinfo, index) => {return <MapLinkFromLocal key={mapinfo.map_id} save={saveDataList[index]} MOTD={mapinfo.MOTD} mapBG={mapinfo.background} title={mapinfo.title} link={mapinfo.map_url} hidden={hidden}/>})}
+        </div>
+        <Modal size='sm' scrollable='true' show={modalView} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Your Scores:</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p style={{fontSize : "18px"}}>It takes you {mean} guesses on average to figure out the map.</p>
+            {scoreList.map((score, index) => {return<p className='text-center' style={{fontSize: "22px"}} key={index}>{score}</p>})}
+          </Modal.Body>
+          <Modal.Footer className='justify-content-center'>
+            <Button variant="primary" onClick={() => {navigator.clipboard.writeText("Average guesses: " + parseFloat(mean) + "\n" + scoreList.join('\n')); setCopied(true)}}>
+                {copied ? "Copied!" : "Copy to Clipboard" }
+            </Button>
+          </Modal.Footer>
+        </Modal>
+    </div></>
   )
 }

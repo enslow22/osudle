@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import Image from 'react-bootstrap/Image'
-import { Button, Col, Row } from 'react-bootstrap'
-import YouTube, { YouTubeProps } from 'react-youtube'
+import { Col, Row } from 'react-bootstrap'
+import YouTube from 'react-youtube'
 //import ReactCountryFlag from 'react-country-flag'
 
 const VideoYT = (props) => {
@@ -15,7 +15,7 @@ const VideoYT = (props) => {
   // Handle pause
   useEffect(() => {
     if (player) {player.pauseVideo()}
-    
+  // eslint-disable-next-line
   }, [props.visible])
 
   // When player is ready, save the player object into state
@@ -24,9 +24,10 @@ const VideoYT = (props) => {
   }
 
   return(
-  <div>
-    <YouTube videoId={youtubeID} style={{display:(props.visible) ? 'inline' : 'none'}} opts={props.opts} onReady={onPlayerReady}/>
-  </div>)
+    <div style={{display:(props.visible) ? 'inline' : 'none'}}>
+      <div className='bg-body-tertiary p-3 rounded-4'>
+        <YouTube className='ratio ratio-16x9' videoId={youtubeID} opts={props.opts} onReady={onPlayerReady}/>
+  </div></div>)
 }
 
 const StatsHint = (props) => {
@@ -35,60 +36,61 @@ const StatsHint = (props) => {
     return(
     <Row className='justify-content-center'>
       <Col className='text-end'>
-      <h2 className='d-inline-flex p-1' style={{fontSize: '45px'}}>{key}:</h2>
+        <h2 className='p-1 fs-1'>{key}:</h2>
       </Col>
       <Col>
-      <h2 className='d-inline-flex p-1' style={{fontSize: '45px'}}>{value}</h2>
+        <h2 className='p-1 fs-1'>{value}</h2>
       </Col>
     </Row>)
   }
 
   return(
-  <Row className='p-3 mb-2 bg-body-tertiary' style={{display:(props.visible) ? 'block' : 'none'}}>
-    {InfoRow('Artist', props.artistName)}
-    {InfoRow('Map Length', props.length)}
-    {InfoRow('Star Rating', props.starRating+" \u2606 ")}
-    {InfoRow('Language', props.language)}
-    {InfoRow('Genre', props.genre  )}
-  </Row>)
+  <div className='overflow-auto' style={{display:(props.visible) ? 'inline' : 'none'}}>
+    <div className='bg-body-tertiary rounded-4 p-3'>
+      {InfoRow('Artist', props.artistName)}
+      {InfoRow('Map Length', props.length)}
+      {InfoRow('Star Rating', props.starRating+" \u2606 ")}
+      {InfoRow('Language', props.language)}
+      {InfoRow('Genre', props.genre  )}
+    </div>
+  </div>)
 
 }
 
 const MapperHint = (props) => {
   return(
-    <>
-    <Row className='p-2 mb-1 bg-body-tertiary' fluid="md" style={{display:(props.visible) ? '' : 'none'}}>
-      <Row>
-        <Col><h1 style={{fontSize:"45px"}}>Mapper:</h1></Col>
-        <Col md="auto">
-        <Button variant="outline-secondary" size='md' href={props.mapperUrl} target="_blank">
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className="bi bi-link-45deg" viewBox="0 0 16 16">
-          <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/>
-          <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z"/>
-          </svg>
-        </Button></Col>
-      </Row>
-      <Row className='pb-4 justify-content-md-center'>
-        <Col md='auto'>
-          <Image src={props.mapperAvatar} fluid rounded/>
-        </Col>
-      </Row>
-      <Row className='justify-content-md-center pb-3' fluid="md">
-        <Col md='auto' className='bg-body-secondary rounded-3'>
-          <h1 className='mx-auto d-inline-flex p-2' style={{fontSize:"80px"}}>{props.mapperName}</h1>
-        </Col>
-      </Row>
-    </Row></>
+      <div style={{display:(props.visible) ? 'inline' : 'none'}}>
+        <div className='bg-body-tertiary rounded-4 px-4'>
+          <Row className='justify-content-between'>
+            <Col md='auto'>
+              <h1 className='display-3 text-start d-inline-flex'>Mapper:</h1>
+            </Col>
+
+          </Row>
+
+          <Row className='justify-content-center pb-3 '>
+            <Image className='w-25' src={props.mapperAvatar} fluid rounded/>
+          </Row>
+
+          <Row className='justify-content-center pb-3'>
+              <a href={props.mapperUrl} target="_blank" rel="noreferrer"><h1 className='p-2 fs-1 text-center'>{props.mapperName}</h1></a>
+          </Row>
+        </div>
+      </div>
   )
 }
 
 const BackgroundHint = (props) => {
 
-  var blurAmount = (props.blur === null ? 'blur(25px)' : 'blur(0px)')
+  var blurAmount = (props.blur === null ? 'blur(15px)' : 'blur(0px)')
 
   return(
-  <div className='col align-self-center p-5 mb-2 bg-body-tertiary' style={{display:(props.visible) ? 'block' : 'none'}}>
-    <Image src={props.bgUrl} style={{filter: blurAmount}} fluid rounded/>
+  <div style={{display:(props.visible) ? 'block' : 'none'}}>
+    <div className='bg-body-tertiary p-3 rounded-4' >
+      <h1>Background:</h1>
+      <br></br>
+      <Image className='p-3' src={props.bgUrl} style={{filter: blurAmount}} fluid rounded/>
+    </div>
   </div>
   )
 }
@@ -96,8 +98,6 @@ const BackgroundHint = (props) => {
 export default function Hint(props) {
 
   var YTOptions = {
-    height : '720px',
-    width : '1280px',
     playerVars : {rel: 0}
   }
 
@@ -105,15 +105,15 @@ export default function Hint(props) {
   const time = new Date(data.map_length * 1000).toISOString()
 
   return(
-  <>
-    <div style={{height: '720px', width: '1280px'}}>
-      <VideoYT src={data.youtube_link_1} visible={props.hintNumber===0} opts={YTOptions}/>
-      <VideoYT src={data.youtube_link_2} visible={props.hintNumber===1} opts={YTOptions}/>
-      <MapperHint  visible={props.hintNumber === 2} mapperName={data.mapper_name} mapperAvatar={data.mapper_avatar} mapperUrl={data.mapper_url} previousNames={data.mapper_previous_names}/>
-      <StatsHint  visible={props.hintNumber === 3} artistName={data.artist} length={(data.map_length >= 600) ? time.slice(14, 19) : time.slice(15,19)} starRating={data.star_rating} language={data.language} genre={data.genre}/>
-      <BackgroundHint  visible={props.hintNumber === 4} bgUrl={data.background} blur={props.won}/>
-      <VideoYT src={data.youtube_link_3} visible={props.hintNumber===5} opts={YTOptions}/>
+    <div className='justify-content-center ratio ratio-16x9 pb-4'>
+
+        <VideoYT src={data.youtube_link_1} visible={props.hintNumber===0} opts={YTOptions}/>
+        <VideoYT src={data.youtube_link_2} visible={props.hintNumber===1} opts={YTOptions}/>
+        <MapperHint  visible={props.hintNumber === 2} mapperName={data.mapper_name} mapperAvatar={data.mapper_avatar} mapperUrl={data.mapper_url} previousNames={data.mapper_previous_names}/>
+        <StatsHint  visible={props.hintNumber === 3} artistName={data.artist} length={(data.map_length >= 600) ? time.slice(14, 19) : time.slice(15,19)} starRating={data.star_rating} language={data.language} genre={data.genre}/>
+        <BackgroundHint  visible={props.hintNumber === 4} bgUrl={data.background} blur={props.won}/>
+        <VideoYT src={data.youtube_link_3} visible={props.hintNumber===5} opts={YTOptions}/>
+
     </div>
-  </>
   )
 }
