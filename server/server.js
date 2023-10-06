@@ -78,7 +78,7 @@ app.post('/api/submitTip', (req, res) => {
     userId = req.body.userId
     mapId = req.body.mapId
 
-    date = dayjs().format('YYYY-MM-DD T HH:mm:ss')
+    date = dayjs().tz('PST8PDT').format('YYYY-MM-DD T HH:mm:ss')
     const q = `INSERT INTO user_req (map_link, user, date) VALUES (? , ? , ?)`
     console.log(date)
     db.query(q, [parseInt(mapId), parseInt(userId), date], (err, data) =>{

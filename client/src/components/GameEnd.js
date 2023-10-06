@@ -35,7 +35,7 @@ export default function GameEnd(props) {
 
         let boxList = []
 
-        for (var i = 0; i < props.infos.guesses.length; i++) {
+        for (var i = 0; i < props.infos.score; i++) {
             boxList.push('\u{1F7E5}')
         }
         if (props.winner) {

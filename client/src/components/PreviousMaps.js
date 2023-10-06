@@ -100,7 +100,7 @@ function getBoxes(saveData) {
 }
 
 function ExportAll(saveDatas) {
-  var stringList = saveDatas.map((save, index) => {return ('Day ' + parseInt(index+1) + ': ' +  getBoxes(save).join(''))})
+  var stringList = saveDatas.map((save, index) => {return ('Day ' + parseInt(index+1) + ':\t' +  getBoxes(save).join(''))})
   return stringList
 }
 
@@ -161,7 +161,7 @@ export default function PreviousMaps(props) {
           </Modal.Header>
           <Modal.Body>
             <p style={{fontSize : "18px"}}>It takes you {mean} guesses on average to figure out the map.</p>
-            {scoreList.map((score, index) => {return<p className='text-center' style={{fontSize: "22px"}} key={index}>{score}</p>})}
+            {scoreList.map((score, index) => {return<p className='text-end text-nowrap fs-5' key={index}>{score}</p>})}
           </Modal.Body>
           <Modal.Footer className='justify-content-center'>
             <Button variant="primary" onClick={() => {navigator.clipboard.writeText("Average guesses: " + parseFloat(mean) + "\n" + scoreList.join('\n')); setCopied(true)}}>
