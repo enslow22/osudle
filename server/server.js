@@ -28,8 +28,8 @@ const db = mysql.createPool({
 var dailies = null
 
 function setDailies() {
-    const today = dayjs().tz('PST8PDT');
-    const start = dayjs('2023-09-21 19:27');
+    const today = dayjs.tz(dayjs(), 'PST8PDT');
+    const start = dayjs.tz('2023-09-21 19:27', 'PST8PDT');
     const elapsed = parseInt(today.diff(start, 'day', true))
     const q = `SELECT * FROM osumapinfo WHERE MOTD != -1 AND MOTD <= ${elapsed} ORDER BY MOTD;`
     db.promise().query(q).then((data) => {
@@ -78,7 +78,7 @@ app.post('/api/submitTip', (req, res) => {
     userId = req.body.userId
     mapId = req.body.mapId
 
-    date = dayjs().tz('PST8PDT').format('YYYY-MM-DD T HH:mm:ss')
+    date = dayjs().format('YYYY-MM-DD T HH:mm:ss')
     const q = `INSERT INTO user_req (map_link, user, date) VALUES (? , ? , ?)`
     console.log(date)
     db.query(q, [parseInt(mapId), parseInt(userId), date], (err, data) =>{
