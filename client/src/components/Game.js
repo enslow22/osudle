@@ -3,7 +3,7 @@ import HintButton from './HintButton'
 import Hint from './Hint'
 import GameEnd from './GameEnd'
 import SkipButton from './SkipButton'
-import { useParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import { Col, Row } from 'react-bootstrap'
 import DownshiftSuggestions from './DownShiftSuggestions'
 import Confetti from 'react-confetti'
@@ -25,20 +25,19 @@ import Confetti from 'react-confetti'
  */
 function Game(props) {
 
-  // temp will be undefined if called from the home page. If it is called from /previous-games/:id, then it will have value :id
-  // We can use this value to determine if the user entered from the home page or from the previous days
-
-  // TODO MOVE ALL THESE INTO STATES
-  const temp = useParams()
-  const dayNumber = (temp.MOTD === undefined) ? props.dailies.length : Number(temp.MOTD)
-  const storageName = 'DailyMap'.concat(dayNumber)
-
+  // searchParams is the query string ?D=x
+  // dayNumber    is just a constant which holds the current day number. (This is also stored in infos as MOTD)
   // backendData  stores all the rows of maps in the database (Used for autosuggest)
   // infos        stores the gameState, including the answer, current score, hint number, and a list of incorrect guesses
   // mapInfo      stores the info for today game's current map
+  
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [dayNumber] = useState(searchParams.get('D') === null ? props.dailies.length : Number(searchParams.get('D')))
   const [backendData, setBackendData] = useState(null)
   const [infos, setInfos] = useState(null)
   const [mapInfo, setMapInfo] = useState(null)
+
+  const storageName = 'DailyMap'.concat(dayNumber)
 
   // initialize the game state
   useEffect(() => {
@@ -48,7 +47,11 @@ function Game(props) {
     setMapInfo(props.dailies[dayNumber-1])
     setBackendData(props.backendData)
     setInfos(defaultInfos)
-  
+
+    if (searchParams.has('D')) {
+      searchParams.delete('D');
+      setSearchParams(searchParams);
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -149,12 +152,12 @@ function QuickButtons(props){
   <>
   <div className="row justify-content-between">
     <div className="col" style={{textAlign:"start"}}>
-      {(props.dayNumber === 1) ? (<></>) : (<a href={"/"+(props.dayNumber-1).toString()}>
+      {(props.dayNumber === 1) ? (<></>) : (<a href={"/?D="+(props.dayNumber-1).toString()}>
         <button className="btn btn-primary">Previous Day</button>
       </a>) }
     </div>
     <div className="col" style={{textAlign:"end"}}>
-      {(props.dayNumber === props.maxDays) ? (<></>) : (<a href={"/"+(props.dayNumber - -1).toString()}>
+      {(props.dayNumber === props.maxDays) ? (<></>) : (<a href={"/?D="+(props.dayNumber - -1).toString()}>
         <button className="btn btn-primary">Next Day</button>
       </a>)}
     </div>

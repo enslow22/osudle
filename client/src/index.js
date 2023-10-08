@@ -43,34 +43,29 @@ const router = createBrowserRouter([
   {
     path: "previous-maps",
     element: <PreviousMaps dailies={dailies}/>,
-  },
-  {
-    path: "/:MOTD",
-    element: <Game backendData={titles} dailies={dailies}/>
   }
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-      <Navbar bg="dark" data-bs-theme="dark" collapseOnSelect expand="lg" className='bg-body-tertiary rounded-3 rounded-top-0'>
-        <Container>
-          
-          <Navbar.Brand href="/">
-            <h1>osudle!</h1>
-          </Navbar.Brand>
-          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-          <Navbar.Collapse id="responsive-navbar-nav">
-            <Nav className="me-auto">
-              <Nav.Link href="/previous-maps"><h2>Previous Days</h2></Nav.Link>
-            </Nav>
-
-            <InfoModal/>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
-      <br></br>
       <Container fluid>
-        <RouterProvider router={router} />
+        <Navbar bg="dark" data-bs-theme="dark" collapseOnSelect expand="lg" className='bg-body-tertiary rounded-3 rounded-top-0 px-3'>
+            
+            <Navbar.Brand href="/">
+              <h1>osudle!</h1>
+            </Navbar.Brand>
+            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+            <Navbar.Collapse id="responsive-navbar-nav">
+              <Nav className="me-auto">
+                <Nav.Link href="/previous-maps"><h2>Previous Maps</h2></Nav.Link>
+              </Nav>
+
+              <InfoModal/>
+            </Navbar.Collapse>
+        </Navbar>
+      
+      <br></br>
+      <RouterProvider router={router} />
       </Container>
   </React.StrictMode>
 );

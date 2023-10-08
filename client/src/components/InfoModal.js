@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Modal, Button, Tooltip, OverlayTrigger, Nav, Form } from 'react-bootstrap'
 
-export default function InfoModal(props) {
+export default function InfoModal() {
 
     const [showModals, setShowModals] = useState([false, false, false])
     const [sugFields, setSugFields] = useState({mapId: '', userId: ''})
@@ -65,9 +65,9 @@ export default function InfoModal(props) {
     return (
         <>
         <Nav>
-            <Nav.Link variant='primary' className='mx-1 my-1' onClick={() => {openModal(0)}}><h2>How To Play</h2></Nav.Link>
-            <Nav.Link variant='primary' className='mx-1 my-1' onClick={() => {openModal(2)}}><h2>Suggest</h2></Nav.Link>
-            <Nav.Link variant='primary' className='mx-1 my-1' onClick={() => {openModal(1)}}><h2>Me!</h2></Nav.Link>
+            <Nav.Link variant='primary' className='ml-1' onClick={() => {openModal(0)}}><h2 className='align-bottom'>Tutorial</h2></Nav.Link>
+            <Nav.Link variant='primary' className='ml-1' onClick={() => {openModal(2)}}><h2 className='align-middle'>Submissions</h2></Nav.Link>
+            <Nav.Link variant='primary' className='ml-1' onClick={() => {openModal(1)}}><h2 className='align-bottom'>About</h2></Nav.Link>
         </Nav>
         
         <Modal show={showModals[0]} onHide={closeModal} size='md'>
@@ -132,9 +132,9 @@ export default function InfoModal(props) {
                     Suggestions Box
                 </Modal.Title>
             </Modal.Header>
-            <Form method='POST' onSubmit={(e)=>{handleSubmit(e);}}>
+            <Form method='POST' onSubmit={(e)=>{handleSubmit(e);}} autoComplete='off'>
                 <Modal.Body>
-                    <h5>Feel free to use this so suggest any maps you would like to see featured in osudle!</h5>
+                    <h5>Feel free to use this to suggest any maps you would like to see featured in osudle!</h5>
 
                         <Form.Group controlId='link' className='pb-2'>
                             <Form.Label>Map Id:</Form.Label>
@@ -151,7 +151,7 @@ export default function InfoModal(props) {
                             Close
                         </Button>
                         <Button variant="primary" type='submit'>
-                            Save Changes
+                            Submit
                         </Button>
                 </Modal.Footer>
             </Form>

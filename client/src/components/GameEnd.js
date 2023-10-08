@@ -3,28 +3,31 @@ import { useState } from 'react';
 import dayjs from 'dayjs'
 
 // Set timezone
+var utc = require('dayjs/plugin/utc')
 var timezone = require('dayjs/plugin/timezone')
+dayjs.extend(utc)
 dayjs.extend(timezone)
-dayjs.tz.setDefault("America/Los_Angeles")
 
 export default function GameEnd(props) {
 
     // time is the seconds until the next day
-    const now = dayjs()
-    const deadline = dayjs().add(1, 'day').set('hour', 19).set('minute', 27).set('second', 0)
-
-
+    
     // Don't ask
-    const [time, setTime] = useState(deadline.diff(now)+1000);
+    const [time, setTime] = useState(0);
     const [copied, setCopied] = useState(false)
 
     const getTime = () => {
-        setTime(deadline.diff(now))
+        setTime(time-1000)
     }
 
+    useEffect(() => {
+        const now = dayjs.tz(dayjs(), 'PST8PDT');
+        const deadline = now.add(1, 'day').set('hour', 19).set('minute', 27).set('second', 0)
+        setTime(deadline.diff(now)+1000)
+    }, [])
 
     // Update the time every 1000ms
-    useEffect(()=>{
+    useEffect(() => {
         const interval = setInterval(() => getTime(), 1000);
         return () => clearInterval(interval)
         
@@ -55,7 +58,7 @@ export default function GameEnd(props) {
         )
     }
 
-    // Return a game-end message to the player and the time until the next map unlocks
+    
     return (
         <div className='bg-body-tertiary rounded-4 text-center'>
             <h1 className='d-inline-flex text-center'>{(props.winner) ? ("Congrats!") : ("Better luck next time!")} The answer was:</h1>
