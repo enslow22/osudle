@@ -111,7 +111,7 @@ app.post('/api/submitTip', (req, res) => {
     console.log(date)
     db.query(q, [parseInt(mapId), parseInt(userId), date], (err, data) =>{
         if (err) return res.sendStatus(500)
-        return res.sendStatus(200)
+        return res.json({msg:'hi if youre doing this i really appreciate it and Im working on a fix by having users authenticate with osu! oauth2 but until then pleeeeeeeeeeease send me a message on discord (enslow) if you find other ways to fuck with this thing. Its actually helping me out since i have no idea what im doing'})
     })
     console.log(req.body)
 })
