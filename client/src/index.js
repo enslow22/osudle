@@ -9,6 +9,7 @@ import "./index.css";
 import PreviousMaps from "./components/PreviousMaps";
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import InfoModal from './components/InfoModal';
+import SignIn from './components/SignIn';
 
 // dailies is an araray of objects that stores all of hte daily maps
 // allData is every row in the db (each row coreresponds to an osu map)
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
   {
     path: "previous-maps",
     element: <PreviousMaps dailies={dailies}/>,
+  },
+  {
+    path: "amcxsjkfsd980u32klsdaf",
+    element: <SignIn/>,
   }
 ]);
 
