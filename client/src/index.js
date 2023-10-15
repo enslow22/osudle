@@ -16,7 +16,7 @@ var dailies = null
 var titles = null
 
 var titlesurl = '/api/titles/'
-var dailiesurl = '/api/dalies/'
+var dailiesurl = '/api/dailies/'
 
 if (process.env.NODE_ENV === 'development') {
   titlesurl = 'http://localhost:5000/api/titles/'
