@@ -1,21 +1,43 @@
+/**
+ * server.js
+ * Handles all backend api requests
+ * 
+ * Uses express, apicache, cors, 
+ * 
+ */
+
 const express = require('express')
 const apicache = require('apicache')
 const cors = require('cors')
-const app = express()
-const cache = apicache.middleware
 const mysql = require('mysql2')
 const dayjs = require('dayjs')
-const schedule = require('node-schedule');
-
-require('dotenv').config()
+const schedule = require('node-schedule')
+const { rateLimit } = require('express-rate-limit')
 var utc = require('dayjs/plugin/utc')
 var timezone = require('dayjs/plugin/timezone')
+
+// Configure stuff
+
+// Express, apicache, .env, dayjs TZ, rate limiter
+const app = express()
+const cache = apicache.middleware
+require('dotenv').config()
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
+const limiter = rateLimit({
+    windowMs: 60 * 60 * 1000, //1 hour
+    limit: 10,
+    standardHeaders: 'draft-7',
+    legacyHeaders: false,
+})
+
+// Apply limiter and other stuff tbh idk what this does
+app.use('/api/submitTip', limiter)
 app.use(express.json())
 app.use(cors())
 
+// Conenct to sqldb
 const db = mysql.createPool({
 	host: process.env.REACT_APP_HOST,
 	user: process.env.REACT_APP_USER,
@@ -39,6 +61,7 @@ function setDailies() {
 
 setDailies()
 
+// Set a rule to fire when the next map needs to be updated
 const rule = new schedule.RecurrenceRule();
 rule.hour = 19;
 rule.minute = 27;
@@ -48,6 +71,16 @@ const job = schedule.scheduleJob(rule, function(){
     console.log("WYSI !!!!!!!!!!!!!!!!!! WYSI");
     setDailies()
 });
+
+
+/**
+ * ENDPOINTS
+ * 
+ * /api/dailies     GET a list of all the daily maps
+ * /api/titles      GET a list of all the titles stored in the db (for autocompletion)
+ * /devapi          GET a list of nothing because not configured
+ * /api/submitTip   POST a map request which gets stored in the database
+ */
 
 app.get("/api/dailies", (req, res) => {
     return res.json(dailies)
@@ -67,11 +100,6 @@ app.get("/devapi", (req, res) => {
         if (err) return res.json(err)
         return res.json(data)
     })
-});
-
-app.get("/api/test", (req, res) => {
-    console.log('hiiiiiiiii')
-    return res.json({})
 });
 
 app.post('/api/submitTip', (req, res) => {

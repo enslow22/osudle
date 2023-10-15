@@ -10,13 +10,20 @@ import PreviousMaps from "./components/PreviousMaps";
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import InfoModal from './components/InfoModal';
 
-
 // dailies is an araray of objects that stores all of hte daily maps
 // allData is every row in the db (each row coreresponds to an osu map)
 var dailies = null
 var titles = null
 
-await fetch('api/titles/').then(
+var titlesurl = '/api/titles/'
+var dailiesurl = '/api/dalies/'
+
+if (process.env.NODE_ENV === 'development') {
+  titlesurl = 'http://localhost:5000/api/titles/'
+  dailiesurl = 'http://localhost:5000/api/dailies/'
+}
+
+await fetch(titlesurl).then(
   response => response.json()
 ).then(
   data => {
@@ -24,7 +31,7 @@ await fetch('api/titles/').then(
   }
 )
 
-await fetch('api/dailies/').then(
+await fetch(dailiesurl).then(
   response => response.json()
 ).then(
   data => {
@@ -59,7 +66,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
               <Nav className="me-auto">
                 <Nav.Link href="/previous-maps"><h2>Previous Maps</h2></Nav.Link>
               </Nav>
-
               <InfoModal/>
             </Navbar.Collapse>
         </Navbar>
