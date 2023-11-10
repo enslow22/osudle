@@ -14,7 +14,12 @@ const VideoYT = (props) => {
 
   // Handle pause
   useEffect(() => {
-    if (player) {player.pauseVideo()}
+    console.log(player)
+    try {
+    if (player) {player.pauseVideo()}}
+    catch (err) {
+      console.log(err)
+    }
   // eslint-disable-next-line
   }, [props.visible])
 
@@ -25,7 +30,7 @@ const VideoYT = (props) => {
 
   return(
     <div style={{display:(props.visible) ? 'inline' : 'none'}}>
-      <div className='bg-body-tertiary p-3 rounded-4'>
+      <div className='bg-body-tertiary p-2 rounded-3'>
         <YouTube className='ratio ratio-16x9' videoId={youtubeID} opts={props.opts} onReady={onPlayerReady}/>
   </div></div>)
 }
@@ -46,7 +51,7 @@ const StatsHint = (props) => {
 
   return(
   <div className='overflow-auto' style={{display:(props.visible) ? 'inline' : 'none'}}>
-    <div className='bg-body-tertiary rounded-4 p-3'>
+    <div className='bg-body-tertiary rounded-3 p-3'>
       {InfoRow('Artist', props.artistName)}
       {InfoRow('Map Length', props.length)}
       {InfoRow('Star Rating', props.starRating+" \u2606 ")}
@@ -60,7 +65,7 @@ const StatsHint = (props) => {
 const MapperHint = (props) => {
   return(
       <div style={{display:(props.visible) ? 'inline' : 'none'}}>
-        <div className='bg-body-tertiary rounded-4 px-4'>
+        <div className='bg-body-tertiary rounded-3 px-4'>
           <Row className='justify-content-between'>
             <Col md='auto'>
               <h1 className='display-3 text-start d-inline-flex'>Mapper:</h1>
@@ -86,7 +91,7 @@ const BackgroundHint = (props) => {
 
   return(
   <div style={{display:(props.visible) ? 'block' : 'none'}}>
-    <div className='bg-body-tertiary p-3 rounded-4' >
+    <div className='bg-body-tertiary p-3 rounded-3' >
       <h1>Background:</h1>
       <br></br>
       <Image className='p-3' src={props.bgUrl} style={{filter: blurAmount}} fluid rounded/>
@@ -102,10 +107,11 @@ export default function Hint(props) {
   }
 
   const data = props.mapData
+
   const time = new Date(data.map_length * 1000).toISOString()
 
   return(
-    <div className='justify-content-center ratio ratio-16x9 pb-4'>
+    <div className='justify-content-center ratio ratio-16x9 pb-4 d-flex' style={{width:'1000px'}}>
 
         <VideoYT src={data.youtube_link_1} visible={props.hintNumber===0} opts={YTOptions}/>
         <VideoYT src={data.youtube_link_2} visible={props.hintNumber===1} opts={YTOptions}/>

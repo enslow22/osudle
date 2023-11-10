@@ -15,7 +15,7 @@ function MapLinkFromLocal(props) {
 
     let scoreList = []
 
-    var boxParams = 'col rounded-3 mx-1 '
+    var boxParams = 'col rounded-2 mx-1 '
     var boxStyle = {paddingBottom:"28%", maxHeight:'0px'}
     for (var i = 0; i < guesses; i++) {
       scoreList.push(<div style={boxStyle} className={boxParams+'bg-danger'}></div>)
@@ -46,7 +46,7 @@ function MapLinkFromLocal(props) {
   return(
     <ListGroup.Item action>
       <a className='text-decoration-none text-center' href={"/?D="+props.MOTD}>
-        <Row className='justify-content-between align-items-center flex-nowrap' style={{minHeight: '80px'}}>
+        <Row className='justify-content-between align-items-center flex-nowrap' style={{minHeight: '88px'}}>
           <Col className='fs-4'>
             Map Number {props.MOTD}
           </Col>
@@ -100,19 +100,45 @@ function getBoxes(saveData) {
 }
 
 function ExportAll(saveDatas) {
-  var stringList = saveDatas.map((save, index) => {return ('Day ' + parseInt(index+1) + ':\t' +  getBoxes(save).join(''))})
+  
+  var stringList = saveDatas.reduce((result, save, index) => {
+    if (save !== null && save.won !== null) {
+      result.push('Day ' + parseInt(index+1) + ':\t' +  getBoxes(save).join(''))
+    }
+    return result
+  }, [])
   return stringList
 }
 
 function getStats(saveDatas) {
-  var scoresList = []
-  var numScores = saveDatas.length
-  saveDatas.map((save, index) => {(save != null && save.won != null) ? scoresList.push(save.score) : numScores--})
+  var winList = []
+  var numPlayed = saveDatas.length
+
+  console.log(saveDatas)
+
+  for (let i = 0; i < saveDatas.length; i++) {
+    var save = saveDatas[i]
+    if (save === null){
+      numPlayed--
+      continue
+    }
+    if (save.won === null) {
+      numPlayed--
+      continue
+    }
+    else if (save.won) {
+      winList.push(save.score)
+    }
+  }
   
-  // Returns mean
-  var mean = (1+scoresList.reduce((a, b) => a + b, 0)/scoresList.length).toFixed(2)
+  // Returns mean (Only counting successes)
+  var mean = (1+winList.reduce((a, b) => a + b, 0)/winList.length).toFixed(2)
+
+  // Success Rate (num successes / total played)
+  console.log(winList.length, '   ', numPlayed)
+  var succRate = (winList.length / numPlayed).toFixed(3)
  
-  return  isNaN(mean) ? 0 : mean
+  return  [(isNaN(mean) ? 0 : mean), (isNaN(succRate) ? 0 : succRate)]
 }
 
 export default function PreviousMaps(props) {
@@ -122,18 +148,18 @@ export default function PreviousMaps(props) {
   const [saveDataList, setSaveDataList] = useState([])
   const [scoreList, setScoreList] = useState([])
   const [copied, setCopied] = useState(false)
-  const [mean, setMean] = useState(0)
+  const [stats, setStats] = useState([0, 0])
   
   useEffect(() => {
     var tempSaveList = []
     for (var i = 1; i <= props.dailies.length; i++) {
       tempSaveList.push( JSON.parse(localStorage.getItem('DailyMap'.concat(i))) )
     }
-    
+    console.log(ExportAll(tempSaveList))
     // List of all scores
     setScoreList(ExportAll(tempSaveList))
     setSaveDataList(tempSaveList)
-    setMean(getStats(tempSaveList))
+    setStats(getStats(tempSaveList))
   }, [])
 
 
@@ -146,25 +172,26 @@ export default function PreviousMaps(props) {
   }
 
   return (
-    (saveDataList.length == 0) ? <></> :
-    <><div className='row justify-content-center'>
+    (saveDataList.length === 0) ? <></> :
+    <><div className='row justify-content-center d-flex' >
       <button className='col-3 btn btn-primary m-3 p-1' onClick={() => {handleOpen();}}>Export All Scores</button>
       <button className='col-3 btn btn-primary m-3 p-1' onClick={() => {setHidden(!hidden)}}>{(hidden) ? 'Show BGs' : 'Hide BGs'}</button>
       </div>
-      <div className='row justify-content-md-center'>
-        <div className='col list-group pb-3'>
+      <div className='row text-center'>
+        <div className='col list-group px-4 pb-4 d-flex' style={{width: '1000px'}}>
           {props.dailies.map((mapinfo, index) => {return <MapLinkFromLocal key={mapinfo.map_id} save={saveDataList[index]} MOTD={mapinfo.MOTD} mapBG={mapinfo.background} title={mapinfo.title} link={mapinfo.map_url} hidden={hidden}/>})}
         </div>
         <Modal size='sm' scrollable='true' show={modalView} onHide={handleClose}>
           <Modal.Header closeButton>
-            <Modal.Title>Your Scores:</Modal.Title>
+            <Modal.Title>Your Scores</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <p style={{fontSize : "16px"}}>It takes you {mean} guesses on average to figure out the map.</p>
-            {scoreList.map((score, index) => {return<p className='text-center text-nowrap fs-5' key={index}>{score}</p>})}
+            <p style={{fontSize : "16px"}}>It takes you {stats[0]} guesses on average to figure out the map.</p>
+            <p style={{fontSize : "16px"}}>You have a success rate of {stats[1]*100}%</p>
+            {scoreList.map((score, index) => {return <p className='text-end text-nowrap fs-5 me-4' key={index}>{score}</p>})}
           </Modal.Body>
           <Modal.Footer className='justify-content-center'>
-            <Button variant="primary" onClick={() => {navigator.clipboard.writeText("Average guesses: " + parseFloat(mean) + "\n" + scoreList.join('\n')); setCopied(true)}}>
+            <Button variant="primary" onClick={() => {navigator.clipboard.writeText("Average guesses: " + parseFloat(stats[0]) + "\n" + "Success Rate: " + parseFloat(stats[1]) + scoreList.join('\n')); setCopied(true)}}>
                 {copied ? "Copied!" : "Copy to Clipboard" }
             </Button>
           </Modal.Footer>

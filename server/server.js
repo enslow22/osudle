@@ -10,9 +10,11 @@ const express = require('express')
 const apicache = require('apicache')
 const cors = require('cors')
 const mysql = require('mysql2')
+const { rateLimit } = require('express-rate-limit')
+const jwt = require('jsonwebtoken')
+const cookieParser = require('cookie-parser')
 const dayjs = require('dayjs')
 const schedule = require('node-schedule')
-const { rateLimit } = require('express-rate-limit')
 var utc = require('dayjs/plugin/utc')
 var timezone = require('dayjs/plugin/timezone')
 
@@ -33,8 +35,10 @@ const limiter = rateLimit({
 })
 
 // Apply limiter and other stuff tbh idk what this does
-app.use('/api/submitTip', limiter)
+app.enable('trust proxy')
+//app.use('/api/submitTip', limiter)
 app.use(express.json())
+app.use(cookieParser())
 app.use(cors())
 
 // Conenct to sqldb
@@ -56,7 +60,8 @@ function setDailies() {
     const q = `SELECT * FROM osumapinfo WHERE MOTD != -1 AND MOTD <= ${elapsed} ORDER BY MOTD;`
     db.promise().query(q).then((data) => {
         dailies = data[0];
-        console.log("Today's map is " + dailies[dailies.length-1].title)});
+        console.log("Today's map is " + dailies[dailies.length-1].title)
+    });
 }
 
 setDailies()
@@ -71,6 +76,8 @@ const job = schedule.scheduleJob(rule, function(){
     console.log("WYSI !!!!!!!!!!!!!!!!!! WYSI");
     setDailies()
 });
+
+const TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 3 //3 days expressed in ms
 
 
 /**
@@ -105,15 +112,84 @@ app.get("/devapi", (req, res) => {
 app.post('/api/submitTip', (req, res) => {
     userId = req.body.userId
     mapId = req.body.mapId
+    times = req.body.times
+    notes = req.body.notes
 
     date = dayjs.tz(dayjs(), 'PST8PDT').format('YYYY-MM-DD T HH:mm:ss')
-    const q = `INSERT INTO user_req (map_link, user, date) VALUES (? , ? , ?)`
+    const q = `INSERT INTO user_req (map_link, user, date, times, notes) VALUES (? , ? , ? , ? , ?)`
     console.log(date)
-    db.query(q, [parseInt(mapId), parseInt(userId), date], (err, data) =>{
-        if (err) return res.sendStatus(500)
-        return res.json({msg:'hi if youre doing this i really appreciate it and Im working on a fix by having users authenticate with osu! oauth2 but until then pleeeeeeeeeeease send me a message on discord (enslow) if you find other ways to fuck with this thing. Its actually helping me out since i have no idea what im doing'})
+    db.query(q, [parseInt(mapId), parseInt(userId), date, times, notes], (err, data) =>{
+        if (err) {console.log(err); return res.sendStatus(500)}
+        return res.sendStatus(200)
     })
     console.log(req.body)
+})
+
+// Sees if a user with a cookie is logged in
+app.get('/auth/logged_in', (req, res) => {
+
+    try {
+        const token = req.cookies.token;
+        if (!token) return res.json({loggedIn: false})
+        const { user } = jwt.verify(token, process.env.REACT_APP_TOKEN_SECRET)
+        const newToken = jwt.sign({ user }, process.env.REACT_APP_TOKEN_SECRET, { expiresIn: TOKEN_EXPIRE_TIME/1000 })
+        res.cookie('token', newToken, { maxAge: TOKEN_EXPIRE_TIME, httpOnly: true})
+        res.json({loggedIn: true, user})
+
+        console.log('from logged in')
+
+    } catch (err) {
+        res.json({ loggedIn: false })
+    }
+
+})
+
+// When someone would like to log out, delete their httponly cookie.
+app.post("/auth/logout", (req, res) => {
+    // clear cookie
+    res.clearCookie('token').json({ message: 'Logged out' });
+});
+
+// Called when someone tries to log in with oauth2
+// Should see if they are registered already. If not, create a new record, otherwise update the old record.
+app.get('/auth', async (req, res) => {
+    console.log('from auth')
+
+    if (!req.query.code) {
+        return res.sendStatus(400).json({message: 'Authorization code missing'})
+    }
+
+    let body = `client_id=27333&client_secret=${process.env.REACT_APP_CLIENT_SECRET}&code=${req.query.code}&grant_type=authorization_code&redirect_uri=https://osudle.com/auth`
+    
+    try {
+        const response = await fetch("https://osu.ppy.sh/oauth/token", {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: body,
+        }).then(response => response.json())
+
+        const profile = await fetch(`https://osu.ppy.sh/api/v2/me/osu`, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "Authorization": `Bearer ${response.access_token}`,
+            },
+        }).then(response => response.json())
+
+        const user = {username: profile.username, avatar_url: profile.avatar_url, id: profile.id}
+
+        const token = jwt.sign({ user }, process.env.REACT_APP_TOKEN_SECRET, { expiresIn: TOKEN_EXPIRE_TIME/1000 })
+        res.cookie('token', token, { maxAge: TOKEN_EXPIRE_TIME, httpOnly: true, })
+        res.json({user,})
+
+    } catch (err) {
+        console.error('Error: ', err)
+        res.status(500).json({message: err.message || 'Server Error'})
+    }
 })
 
 app.listen(5000, () => {console.log("Server started on port 5000")});

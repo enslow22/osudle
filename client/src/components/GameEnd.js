@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import dayjs from 'dayjs'
+import Confetti from 'react-confetti'
 
 // Set timezone
 var utc = require('dayjs/plugin/utc')
@@ -47,7 +48,6 @@ export default function GameEnd(props) {
         while (boxList.length < 6) {
             boxList.push('\u2B1B')
         }
-
         return boxList
 
     }
@@ -57,13 +57,14 @@ export default function GameEnd(props) {
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-share-fill" viewBox="0 0 16 16"><path d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5z"/></svg>
         )
     }
-
     
     return (
         <div className='bg-body-tertiary rounded-4 text-center'>
+            {props.winner ? (<Confetti numberOfPieces={50} gravity={0.15} friction={0.98} recycle={false} height={window.innerHeight} tweenFunction={function easeOutQuad(t, b, _c, d) {var c = _c - b; return -c * (t /= d) * (t - 600) + b;}} confettiSource={{x:window.innerWidth/2 - 100, y:window.innerHeight, w:200, h:10}} initialVelocityX={window.innerWidth/80} initialVelocityY={{min: -1*window.innerHeight/30, max: -5}}/>
+            ) : (<></>)}
             <h1 className='d-inline-flex text-center'>{(props.winner) ? ("Congrats!") : ("Better luck next time!")} The answer was:</h1>
             <br></br>
-            <h1 className='m-1 mb-3 d-inline-flex mx-auto'><a href={props.mapInfo.map_url} target="_blank" rel='noopener noreferrer'>{props.mapInfo.title} - [{props.mapInfo.diff_name}]</a></h1>
+            <h1 className='m-1 mb-3 d-inline-flex mx-auto text-wrap'><a href={props.mapInfo.map_url} target="_blank" rel='noopener noreferrer'>{props.mapInfo.title} - [{props.mapInfo.diff_name}]</a></h1>
 
             <div className='row justify-content-center flex-nowrap align-items-center pb-2'>
                 <div className='col d-flex align-items-center'>

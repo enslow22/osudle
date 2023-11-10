@@ -3,10 +3,9 @@ import HintButton from './HintButton'
 import Hint from './Hint'
 import GameEnd from './GameEnd'
 import SkipButton from './SkipButton'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, Link } from 'react-router-dom'
 import { Col, Row } from 'react-bootstrap'
 import DownshiftSuggestions from './DownShiftSuggestions'
-import Confetti from 'react-confetti'
 
 // TODO:
 // IMPORTANT  STUFF //
@@ -17,7 +16,6 @@ import Confetti from 'react-confetti'
 // Add country code to db to include in Mapper Hint
 // Add popovers for previous guesses (include map bg, title, and diff)
 // Add popovers for the mapper's previous names
-// Have users enter their name and then write api post paths
 /**
  * @param {object} props Component props
  * @param {Array} props.backendData An array of objects where each element represents an osu map
@@ -32,7 +30,7 @@ function Game(props) {
   // mapInfo      stores the info for today game's current map
   
   const [searchParams, setSearchParams] = useSearchParams();
-  const [dayNumber] = useState(searchParams.get('D') === null ? props.dailies.length : Number(searchParams.get('D')))
+  const [dayNumber, setDayNumber] = useState(searchParams.get('D') === null ? props.dailies.length : Number(searchParams.get('D')))
   const [backendData, setBackendData] = useState(null)
   const [infos, setInfos] = useState(null)
   const [mapInfo, setMapInfo] = useState(null)
@@ -54,6 +52,23 @@ function Game(props) {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    
+    const handler = setTimeout(() => {
+      const storageName = 'DailyMap'.concat(dayNumber)
+      const saveData = localStorage.getItem(storageName)
+      const defaultInfos = (saveData === null) ? {score:0, hint:0, won:null, guesses:[], hintsUnlocked: 0} : JSON.parse(saveData)
+      setInfos(defaultInfos)
+      setMapInfo(props.dailies[dayNumber-1]) // Need to DEBOUNCE THIS because the yt player SUCKS
+    }, 700);
+
+    // Cleanup function to clear the timeout if the effect is re-run before it completes
+    return () => {
+      clearTimeout(handler);
+    };
+
+  }, [dayNumber])
 
   // Set the currently viewed hint
   const changeHint = (e, id) => {
@@ -90,28 +105,27 @@ function Game(props) {
     return (guess === mapInfo.title) ? <><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" className="bi bi-check-square" viewBox="0 0 16 16">
     <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
     <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.235.235 0 0 1 .02-.022z"/>
-  </svg></> : <><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" className="bi bi-x-square" viewBox="0 0 16 16">
-  <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
-  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
-</svg></>
+    </svg></> : <><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" className="bi bi-x-square" viewBox="0 0 16 16">
+    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+    </svg></>
   } 
 
   // A list that stores all of the user's previous guesses
   const getGuessList = () => {
-    return(infos.guesses.map((guess, index) => {return <li className={"row text-primary justify-content-between border-" + (index!==0 ? "top" : "")} key={index}><Col md='auto' className='d-flex justify-content-center'>{guess.title}</Col><Col md='auto' className='py-2 d-flex justify-content-center'>{correctIcon(guess.title)}</Col></li>}))
+    return(infos.guesses.map((guess, index) => {return <li className={"row text-primary fs-1 justify-content-between border-" + (index!==0 ? "top" : "")} key={index}><Col md='auto' className='d-flex justify-content-center'>{guess.title}</Col><Col md='auto' className='py-2 d-flex justify-content-center'>{correctIcon(guess.title)}</Col></li>}))
   }
 
   return (
     (infos === null || mapInfo === null || backendData === null || mapInfo === undefined) ? <h1>Loading!</h1> : 
-    <>
-      <Confetti run={(infos.won === true)} numberOfPieces={150} gravity={0.15} friction={0.98} recycle={false} height={window.innerHeight} tweenFunction={function easeOutQuad(t, b, _c, d) {var c = _c - b; return -c * (t /= d) * (t - 600) + b;}} confettiSource={{x:window.innerWidth/2 - 100, y:window.innerHeight, w:200, h:10}} initialVelocityX={window.innerWidth/80} initialVelocityY={{min: -1*window.innerHeight/30, max: -5}}/>
+    <div className='px-3' style={{minHeight: "1130px"}}>
       
-      <Row className='justify-content-between align-center'>
-        <Col md={'auto'} className='bg-body-tertiary rounded-3 text-center mt-2'>
-          <h1 className='text-primary text-nowrap'>Map #{dayNumber}</h1>
+      <Row className='justify-content-between'>
+        <Col md={4} className='bg-body-tertiary rounded-3 text-center text-nowrap clearfix'>
+          <QuickButtons callback={setDayNumber} dayNumber={dayNumber} maxDays={props.dailies.length}/>
         </Col>
-        <Col md={'auto'} className='bg-body-tertiary rounded-3 text-center mt-2'>
-          <h1 className='text-primary text-nowrap'>Score: {6-infos.score}</h1>
+        <Col md={4} className='bg-body-tertiary rounded-3 text-center'>
+          <h1 className='text-primary text-nowrap fs-2' >Score: {6-infos.score}</h1>
         </Col>
       </Row>
       <br></br>
@@ -136,33 +150,35 @@ function Game(props) {
       {(getGuessList().length !== 0) ? (
       <> 
       
-      <h1 className="text-primary" style={{fontSize:'80px'}}>Guesses</h1>
-      <Row className='p-5 justify-content-md-center text-center'>
-        {(<ol style={{listStyle:'none', fontSize:'40px'}} className='bg-body-tertiary rounded-3 pb-1'>{getGuessList()}</ol>)}
+      <h1 className="text-primary text-start text-center" style={{fontSize:'40px'}}>Guesses</h1>
+      <Row className='p-2 justify-content-md-center text-center'>
+        {(<ol style={{listStyle:'none', fontSize:'32px'}} className='bg-body-tertiary rounded-3 pb-1'>{getGuessList()}</ol>)}
       </Row></>) : (null)}
-      <QuickButtons dayNumber={dayNumber} maxDays={props.dailies.length}/>
-      <br></br>
-    </>
+      
+    </div>
   )
 }
 
 //Adds the next and previous day buttons in the bottom of the screen
 function QuickButtons(props){
-  return (
-  <>
-  <div className="row justify-content-between">
-    <div className="col" style={{textAlign:"start"}}>
-      {(props.dayNumber === 1) ? (<></>) : (<a href={"/?D="+(props.dayNumber-1).toString()}>
-        <button className="btn btn-primary">Previous Day</button>
-      </a>) }
-    </div>
-    <div className="col" style={{textAlign:"end"}}>
-      {(props.dayNumber === props.maxDays) ? (<></>) : (<a href={"/?D="+(props.dayNumber - -1).toString()}>
-        <button className="btn btn-primary">Next Day</button>
-      </a>)}
-    </div>
-  </div>
-  </>)
+
+  return(
+    <>
+
+      {(props.dayNumber === 1) ? (<></>) : (<button className="btn float-start" onClick={() => props.callback(props.dayNumber - 1)}><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-caret-left-fill" viewBox="0 0 16 16">
+        <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
+      </svg></button>) }
+
+      
+      <span className='text-primary py-0 mb-0 fs-2 d-inline-flex'>Map #{props.dayNumber}</span>
+
+      {(props.dayNumber === props.maxDays) ? (<></>) : (<button className="btn float-end" onClick={() => props.callback(props.dayNumber + 1)}><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
+        <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
+      </svg></button>)}
+
+    </>
+  )
+  
 }
 
 export default Game

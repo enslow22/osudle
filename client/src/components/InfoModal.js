@@ -1,11 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
+import { AuthContext } from '../index'
 import { Modal, Button, Tooltip, OverlayTrigger, Nav, Form } from 'react-bootstrap'
 
 export default function InfoModal() {
 
     const [showModals, setShowModals] = useState([false, false, false])
     const [sugFields, setSugFields] = useState({mapId: '', userId: ''})
-
+    
+    const {loggedIn} = useContext(AuthContext)
 
 
     const openModal = (num) => {
@@ -22,54 +24,10 @@ export default function InfoModal() {
         </Tooltip>
     )
 
-    async function postSuggestion(data) {
-        var postUrl = (process.env.NODE_ENV === 'development') ? 'http://localhost:5000/api/submitTip/': '/api/submitTip/'
-        const res = await fetch(postUrl, {
-            method: "POST",
-            mode: "cors",
-            cache: "no-cache",
-            credentials: "same-origin",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            redirect: "manual",
-            referrerPolicy: 'same-origin',
-            body: JSON.stringify(data),
-        });
-        if (res.status === 200) {
-            alert('Thank you for your contribution!')
-            closeModal()
-        }
-        else if (res.status === 500) {
-            alert('Something went wrong, submission may be closed for now :(')
-        }
-    }
-
-    function isInt(value) {
-        return !isNaN(value) && parseInt(value) == value && !isNaN(parseInt(value, 10));
-    }
-
-    async function handleSubmit(e) {
-        e.preventDefault();
-
-        // Ensure both fields are integers
-        const mapId = sugFields.mapId
-        const userId = (sugFields.userId === '') ? '0' : sugFields.userId
-        if (isInt(mapId) && isInt(userId)) {  
-            await postSuggestion({mapId: mapId, userId: userId})
-            setSugFields({mapId: '', userId: ''})
-        }
-        else {
-            alert("One or more of your inputs was not a valid integer")
-        }
-    }
-
     return (
         <>
         <Nav>
-            <Nav.Link variant='primary' className='ml-1' onClick={() => {openModal(0)}}><h2 className='align-bottom'>Tutorial</h2></Nav.Link>
-            <Nav.Link variant='primary' className='ml-1' onClick={() => {openModal(2)}}><h2 className='align-middle'>Submissions</h2></Nav.Link>
-            <Nav.Link variant='primary' className='ml-1' onClick={() => {openModal(1)}}><h2 className='align-bottom'>About</h2></Nav.Link>
+            <Nav.Link variant='primary' className='mx-1' onClick={() => {openModal(0)}}><h2 className='align-bottom'>Tutorial</h2></Nav.Link>
         </Nav>
         
         <Modal show={showModals[0]} onHide={closeModal} size='md'>
@@ -128,36 +86,7 @@ export default function InfoModal() {
             </Modal.Body>
             
         </Modal>
-        <Modal show={showModals[2]} onHide={closeModal} size='md'>
-            <Modal.Header closeButton>
-                <Modal.Title id="Suggestions">
-                    Suggestions Box
-                </Modal.Title>
-            </Modal.Header>
-            <Form method='POST' onSubmit={(e)=>{handleSubmit(e);}} autoComplete='off'>
-                <Modal.Body>
-                    <h5>Feel free to use this to suggest any maps you would like to see featured in osudle!</h5>
-
-                        <Form.Group controlId='link' className='pb-2'>
-                            <Form.Label>Map Id:</Form.Label>
-                            <Form.Control type={'text'} placeholder='ex: 4148965' autoFocus onChange={(e) => setSugFields({...sugFields, mapId: e.target.value})}/>
-                        </Form.Group>
-                        <Form.Group controlId='userId'>
-                            <Form.Label>Your osu! profile ID (optional):</Form.Label>
-                            <Form.Control type={'text'} placeholder='ex: 10651409' onChange={(e) => setSugFields({...sugFields, userId: e.target.value})}/>
-                        </Form.Group>
-                    
-                </Modal.Body>
-                <Modal.Footer>
-                        <Button variant="secondary" onClick={closeModal}>
-                            Close
-                        </Button>
-                        <Button variant="primary" type='submit'>
-                            Submit
-                        </Button>
-                </Modal.Footer>
-            </Form>
-        </Modal>
+ 
         </>
     )
 } 

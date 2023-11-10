@@ -12,8 +12,11 @@ export default function Tutorial() {
         <p>New map every day at 7:27pm PDT</p>
         <hr/>
         <h1>Submission</h1>
-        <p>I want the daily maps to be community-driven, otherwise my bias for osu! maps would take over osudle!. So please submit maps you would like to see in osudle!!</p>
+        <p>I want the daily maps to be community-driven, otherwise my bias for osu! maps would take over osudle!. So please submit maps you would like to see!</p>
         <p>You must sign in with your osu! account in order use the submission feature.</p>
+        <hr/>
+        <h1>Save Data</h1>
+        <p>Currently, data is saved locally on the browser. I have plans to have data be saved remotely with osu! oauth, but it is currently not implemented. This means if you clear your cookies and local storage, your progress will be lost.</p>
     </div>
   )
 }

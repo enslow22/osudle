@@ -1,29 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState, useContext, createContext, useCallback, useRef } from 'react';
 import ReactDOM from "react-dom/client";
-import {
-  createBrowserRouter,
-  RouterProvider
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider, useNavigate, } from "react-router-dom";
+import { Navbar, Nav, Container } from 'react-bootstrap';
+import PreviousMaps from "./components/PreviousMaps";
+import Tutorial from './components/Tutorial';   
+import SignIn from './components/SignIn';
+import About from './components/About';
 import Game from './components/Game';
 import "./index.css";
-import PreviousMaps from "./components/PreviousMaps";
-import { Navbar, Nav, Container } from 'react-bootstrap';
-import InfoModal from './components/InfoModal';
-import SignIn from './components/SignIn';
+import Privacy from './components/Privacy';
 
 // dailies is an araray of objects that stores all of hte daily maps
 // allData is every row in the db (each row coreresponds to an osu map)
 var dailies = null
 var titles = null
 
-var titlesurl = '/api/titles/'
-var dailiesurl = '/api/dailies/'
+var titlesurl = 'api/titles/'
+var dailiesurl = 'api/dailies/'
 
-if (process.env.NODE_ENV === 'development') {
-  titlesurl = 'http://localhost:5000/api/titles/'
-  dailiesurl = 'http://localhost:5000/api/dailies/'
-}
 
+// Get data from backend
 await fetch(titlesurl).then(
   response => response.json()
 ).then(
@@ -41,10 +37,72 @@ await fetch(dailiesurl).then(
 )
 
 
+export const AuthContext = createContext();
+
+const AuthContextProvider = ({children}) => {
+  const [loggedIn, setLoggedIn] = useState(null)
+  const [user, setUser] = useState(null)
+
+  const checkLoginState = useCallback(async () => {
+    try {
+      const data = await fetch(`auth/logged_in`, { credentials: 'same-origin' }).then(response => response.json());
+      setLoggedIn(data.loggedIn)
+      setUser(data.user)
+      console.log((data.loggedIn) ? 'Welcome to osudle!' : 'See you next time!')
+    } catch (err) {
+      console.log(err)
+    }
+  }, [])
+
+  useEffect(() => {
+    checkLoginState();
+  }, [checkLoginState]);
+
+  return(
+    <AuthContext.Provider value={{loggedIn, checkLoginState, user}}>
+      {children}
+    </AuthContext.Provider>
+  )
+}
+
+
+// If the oauth reponse is good, store the access token in a cookie? Then we can use the cookie to make any requests
+function Authenticate() {
+  const called = useRef(false);
+  const {checkLoginState, loggedIn} = useContext(AuthContext) 
+  const urlparams = new URLSearchParams(window.location.search)
+  const authCode = urlparams.get('code')
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    (async () => {
+      if (loggedIn === false) {
+        try {
+          // Prevent strictmode double-render
+          if (called.current) return;
+          called.current = true;
+          await fetch(`auth?code=${authCode}`, {credentials: 'same-origin'}).then(
+            response => response.json())
+          checkLoginState()
+          navigate('/')
+        }
+        catch (err) {
+          console.log(err)
+          navigate('/')
+        }
+      } else if (loggedIn === true) {
+        navigate('/')
+      }
+    })();
+  }, [checkLoginState, loggedIn, navigate])
+
+  return(<></>)
+}
+
 // Routes for each url
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "",  
     element: <Game backendData={titles} dailies={dailies}/>,
     errorElement: <h1>{"uwu sowwy we cuudent find youw page >ww<"}</h1>
   },
@@ -53,31 +111,60 @@ const router = createBrowserRouter([
     element: <PreviousMaps dailies={dailies}/>,
   },
   {
-    path: "amcxsjkfsd980u32klsdaf",
-    element: <SignIn/>,
+    path: "auth",
+    element: <Authenticate/>,
+  },
+  {
+    path: "about",
+    element: <About/>,
+  },
+  {
+    path: "tutorial",
+    element: <Tutorial/>
+  },
+  {
+    path: "privacy",
+    element: <Privacy/>
   }
 ]);
 
-ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-      <Container fluid>
-        <Navbar bg="dark" data-bs-theme="dark" collapseOnSelect expand="lg" className='bg-body-tertiary rounded-3 rounded-top-0 px-3'>
-            
-            <Navbar.Brand href="/">
-              <h1>osudle!</h1>
-            </Navbar.Brand>
-            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-            <Navbar.Collapse id="responsive-navbar-nav">
-              <Nav className="me-auto">
-                <Nav.Link href="/previous-maps"><h2>Previous Maps</h2></Nav.Link>
-              </Nav>
-              <InfoModal/>
-            </Navbar.Collapse>
-        </Navbar>
-      
-      <br></br>
-      <RouterProvider router={router} />
-      </Container>
-  </React.StrictMode>
-);
 
+function App() {
+
+  return(
+
+    
+    <RouterProvider router={router} />
+      
+  )
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+        <React.StrictMode>
+          <Container fluid className='bg-dark shadow-lg' style={{overflow:'hidden', maxWidth:'1000px'}}>
+            <AuthContextProvider>
+              <Navbar bg="dark" data-bs-theme="dark" collapseOnSelect expand="lg" className='bg-body-tertiary px-4 d-flex' style={{margin : '0px -20px'}}>
+                <Navbar.Brand href="/">
+                  <h1>osudle!</h1>
+                </Navbar.Brand>
+                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                <Navbar.Collapse id="responsive-navbar-nav">
+                  <Nav className="me-auto">
+                    <Nav.Link href="/previous-maps" className='text-nowrap'><h2>Previous Maps</h2></Nav.Link>
+                  </Nav>
+                  <SignIn/>
+                </Navbar.Collapse>
+              </Navbar>
+              <br></br>
+              <App/>
+            </AuthContextProvider>
+          </Container>
+          <nav className="navbar bg-body-tertiary mx-auto">
+              <div className="container mx-auto" style={{justifyContent:'center'}}>
+                <a className="navbar-text px-4" href="tutorial">Tutorial</a>
+                <a className="navbar-text px-4" href="about">About</a>
+                <a className="navbar-text px-4" href="privacy">Privacy Policy</a>
+              </div>
+          </nav>
+      </React.StrictMode>
+);
