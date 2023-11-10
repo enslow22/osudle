@@ -79,7 +79,7 @@ export default function SignIn() {
         <>
             {(!loggedIn || user === null) ? 
             <Nav>
-                <Nav.Link variant='primary' className='ml-1 text-nowrap me-auto' href='https://osu.ppy.sh/oauth/authorize?client_id=27333&redirect_uri=https://osudle.com/auth&response_type=code'>
+                <Nav.Link variant='primary' className='ml-1 text-nowrap me-auto' href='https://osu.ppy.sh/oauth/authorize?client_id=27333&redirect_uri=https://www.osudle.com/auth&response_type=code'>
                     <h2 className='align-bottom'>
                         Sign In
                     </h2>

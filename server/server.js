@@ -159,7 +159,7 @@ app.get('/auth', async (req, res) => {
         return res.sendStatus(400).json({message: 'Authorization code missing'})
     }
 
-    let body = `client_id=27333&client_secret=${process.env.REACT_APP_CLIENT_SECRET}&code=${req.query.code}&grant_type=authorization_code&redirect_uri=https://osudle.com/auth`
+    let body = `client_id=27333&client_secret=${process.env.REACT_APP_CLIENT_SECRET}&code=${req.query.code}&grant_type=authorization_code&redirect_uri=https://www.osudle.com/auth`
     
     try {
         const response = await fetch("https://osu.ppy.sh/oauth/token", {
