@@ -45,7 +45,7 @@ const AuthContextProvider = ({children}) => {
 
   const checkLoginState = useCallback(async () => {
     try {
-      const data = await fetch(`auth/logged_in`, { credentials: 'same-origin' }).then(response => response.json());
+      const data = await fetch(`auth/logged_in`, { credentials: 'include' }).then(response => response.json());
       setLoggedIn(data.loggedIn)
       setUser(data.user)
       console.log((data.loggedIn) ? 'Welcome to osudle!' : 'See you next time!')
@@ -81,7 +81,7 @@ function Authenticate() {
           // Prevent strictmode double-render
           if (called.current) return;
           called.current = true;
-          await fetch(`auth?code=${authCode}`, {credentials: 'same-origin'}).then(
+          await fetch(`auth?code=${authCode}`, {credentials: 'include'}).then(
             response => response.json())
           checkLoginState()
           navigate('/')
