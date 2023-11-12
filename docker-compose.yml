@@ -7,10 +7,11 @@ services:
       MYSQL_DATABASE: "${MYSQL_DB}"
       MYSQL_PASSWORD: "${MYSQL_PASS}"
       MYSQL_USER: "${MYSQL_USER}"
+      MYSQL_ROOT_PASSWORD: "${MYSQL_PASS}"
     ports:
       - '3306:3306'
     volumes:
-      - osudle-db:/var/lib/mysql
+      - osudle-db-prod:/var/lib/mysql/
   api:
     container_name: osudle-api
     build: ./server
@@ -43,4 +44,4 @@ services:
     depends_on:
       - nginx
 volumes:
-  osudle-db:
+  osudle-db-prod:

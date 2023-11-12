@@ -1,9 +1,9 @@
 /**
  * server.js
  * Handles all backend api requests
- * 
- * Uses express, apicache, cors, 
- * 
+ *
+ * Uses express, apicache, cors,
+ *
  */
 
 const express = require('express')
@@ -19,7 +19,6 @@ var utc = require('dayjs/plugin/utc')
 var timezone = require('dayjs/plugin/timezone')
 
 // Configure stuff
-
 // Express, apicache, .env, dayjs TZ, rate limiter
 const app = express()
 const cache = apicache.middleware
@@ -35,8 +34,7 @@ const limiter = rateLimit({
 })
 
 // Apply limiter and other stuff tbh idk what this does
-app.enable('trust proxy')
-//app.use('/api/submitTip', limiter)
+app.use('/api/submitTip', limiter)
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors())
@@ -82,7 +80,7 @@ const TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 3 //3 days expressed in ms
 
 /**
  * ENDPOINTS
- * 
+ *
  * /api/dailies     GET a list of all the daily maps
  * /api/titles      GET a list of all the titles stored in the db (for autocompletion)
  * /devapi          GET a list of nothing because not configured
@@ -125,6 +123,7 @@ app.post('/api/submitTip', (req, res) => {
     console.log(req.body)
 })
 
+
 // Sees if a user with a cookie is logged in
 app.get('/auth/logged_in', (req, res) => {
 
@@ -135,8 +134,6 @@ app.get('/auth/logged_in', (req, res) => {
         const newToken = jwt.sign({ user }, process.env.REACT_APP_TOKEN_SECRET, { expiresIn: TOKEN_EXPIRE_TIME/1000 })
         res.cookie('token', newToken, { maxAge: TOKEN_EXPIRE_TIME, httpOnly: true})
         res.json({loggedIn: true, user})
-
-        console.log('from logged in')
 
     } catch (err) {
         res.json({ loggedIn: false })
@@ -159,8 +156,8 @@ app.get('/auth', async (req, res) => {
         return res.sendStatus(400).json({message: 'Authorization code missing'})
     }
 
-    let body = `client_id=27333&client_secret=${process.env.REACT_APP_CLIENT_SECRET}&code=${req.query.code}&grant_type=authorization_code&redirect_uri=https://www.osudle.com/auth`
-    
+    let body = `client_id=27333&client_secret=${process.env.REACT_APP_CLIENT_SECRET}&code=${req.query.code}&grant_type=authorization_code&redirect_uri=https://www.osudle.com/callback`
+
     try {
         const response = await fetch("https://osu.ppy.sh/oauth/token", {
             method: "POST",
@@ -181,7 +178,7 @@ app.get('/auth', async (req, res) => {
         }).then(response => response.json())
 
         const user = {username: profile.username, avatar_url: profile.avatar_url, id: profile.id}
-
+        console.log(profile.username, ' id:', profile.id, ' logged in')
         const token = jwt.sign({ user }, process.env.REACT_APP_TOKEN_SECRET, { expiresIn: TOKEN_EXPIRE_TIME/1000 })
         res.cookie('token', token, { maxAge: TOKEN_EXPIRE_TIME, httpOnly: true, })
         res.json({user,})

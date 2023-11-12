@@ -9,7 +9,7 @@ export default function SignIn() {
     const [sugFields, setSugFields] = useState({mapId: '', userId: '', times: '', notes: ''})
 
     async function postSuggestion(data) {
-        var postUrl = '/api/submitTip/'
+        var postUrl = 'api/submitTip/'
         const res = await fetch(postUrl, {
             method: "POST",
             mode: "cors",
@@ -43,7 +43,7 @@ export default function SignIn() {
         const times = sugFields.times
         const notes = sugFields.notes
         console.log(mapId)
-        if (isInt(mapId)) {  
+        if (isInt(mapId)) {
             await postSuggestion({mapId: mapId, userId: user.id, times: times, notes: notes})
             setSugFields({mapId: '', userId: ''})
         }
@@ -56,7 +56,7 @@ export default function SignIn() {
 
         try {
     
-            await fetch(`auth/logout`, 
+            await fetch(`auth/logout/`, 
             {
                 method: 'POST',
                 mode: 'same-origin',
@@ -79,7 +79,7 @@ export default function SignIn() {
         <>
             {(!loggedIn || user === null) ? 
             <Nav>
-                <Nav.Link variant='primary' className='ml-1 text-nowrap me-auto' href='https://osu.ppy.sh/oauth/authorize?client_id=27333&redirect_uri=https://www.osudle.com/auth&response_type=code'>
+                <Nav.Link variant='primary' className='ml-1 text-nowrap me-auto' href='https://osu.ppy.sh/oauth/authorize?client_id=27333&redirect_uri=https://www.osudle.com/callback&response_type=code'>
                     <h2 className='align-bottom'>
                         Sign In
                     </h2>

@@ -45,10 +45,9 @@ const AuthContextProvider = ({children}) => {
 
   const checkLoginState = useCallback(async () => {
     try {
-      const data = await fetch(`auth/logged_in`, { credentials: 'same-origin' }).then(response => response.json());
+      const data = await fetch(`auth/logged_in/`, { credentials: 'same-origin', }).then(response => response.json());
       setLoggedIn(data.loggedIn)
       setUser(data.user)
-      console.log((data.loggedIn) ? 'Welcome to osudle!' : 'See you next time!')
     } catch (err) {
       console.log(err)
     }
@@ -68,22 +67,17 @@ const AuthContextProvider = ({children}) => {
 
 // If the oauth reponse is good, store the access token in a cookie? Then we can use the cookie to make any requests
 function Authenticate() {
-  const called = useRef(false);
-  const {checkLoginState, loggedIn} = useContext(AuthContext) 
+  const {checkLoginState, loggedIn} = useContext(AuthContext)
   const urlparams = new URLSearchParams(window.location.search)
   const authCode = urlparams.get('code')
   const navigate = useNavigate()
-
   useEffect(() => {
     (async () => {
       if (loggedIn === false) {
         try {
-          // Prevent strictmode double-render
-          if (called.current) return;
-          called.current = true;
-          await fetch(`auth?code=${authCode}`, {credentials: 'same-origin'}).then(
-            response => response.json())
-          checkLoginState()
+          const data = await fetch(`auth?code=${authCode}`, {credentials: 'same-origin'}).then(
+          response => response.json())
+	  checkLoginState()
           navigate('/')
         }
         catch (err) {
@@ -102,7 +96,7 @@ function Authenticate() {
 // Routes for each url
 const router = createBrowserRouter([
   {
-    path: "",  
+    path: "",
     element: <Game backendData={titles} dailies={dailies}/>,
     errorElement: <h1>{"uwu sowwy we cuudent find youw page >ww<"}</h1>
   },
@@ -111,7 +105,7 @@ const router = createBrowserRouter([
     element: <PreviousMaps dailies={dailies}/>,
   },
   {
-    path: "auth",
+    path: "callback",
     element: <Authenticate/>,
   },
   {
@@ -132,10 +126,7 @@ const router = createBrowserRouter([
 function App() {
 
   return(
-
-    
     <RouterProvider router={router} />
-      
   )
 }
 
@@ -152,7 +143,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                   <Nav className="me-auto">
                     <Nav.Link href="/previous-maps" className='text-nowrap'><h2>Previous Maps</h2></Nav.Link>
                   </Nav>
-                  <SignIn/>
+		  <SignIn/>
                 </Navbar.Collapse>
               </Navbar>
               <br></br>
