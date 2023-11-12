@@ -45,7 +45,11 @@ const AuthContextProvider = ({children}) => {
 
   const checkLoginState = useCallback(async () => {
     try {
+<<<<<<< HEAD
       const data = await fetch(`auth/logged_in/`, { credentials: 'same-origin', }).then(response => response.json());
+=======
+      const data = await fetch(`auth/logged_in`, { credentials: 'include' }).then(response => response.json());
+>>>>>>> b74f8516e8297a4733e5f378850a554b09c115e1
       setLoggedIn(data.loggedIn)
       setUser(data.user)
     } catch (err) {
@@ -75,9 +79,18 @@ function Authenticate() {
     (async () => {
       if (loggedIn === false) {
         try {
+<<<<<<< HEAD
           const data = await fetch(`auth?code=${authCode}`, {credentials: 'same-origin'}).then(
           response => response.json())
 	  checkLoginState()
+=======
+          // Prevent strictmode double-render
+          if (called.current) return;
+          called.current = true;
+          await fetch(`auth?code=${authCode}`, {credentials: 'include'}).then(
+            response => response.json())
+          checkLoginState()
+>>>>>>> b74f8516e8297a4733e5f378850a554b09c115e1
           navigate('/')
         }
         catch (err) {
