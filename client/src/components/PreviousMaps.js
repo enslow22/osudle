@@ -136,9 +136,9 @@ function getStats(saveDatas) {
 
   // Success Rate (num successes / total played)
   console.log(winList.length, '   ', numPlayed)
-  var succRate = (winList.length / numPlayed).toFixed(3)
+  var succPerc = (winList.length / numPlayed * 100).toFixed(2)
  
-  return  [(isNaN(mean) ? 0 : mean), (isNaN(succRate) ? 0 : succRate)]
+  return  [(isNaN(mean) ? 0 : mean), (isNaN(succPerc) ? 0 : succPerc)]
 }
 
 export default function PreviousMaps(props) {
@@ -187,7 +187,7 @@ export default function PreviousMaps(props) {
           </Modal.Header>
           <Modal.Body>
             <p style={{fontSize : "16px"}}>It takes you {stats[0]} guesses on average to figure out the map.</p>
-            <p style={{fontSize : "16px"}}>You have a success rate of {stats[1]*100}%</p>
+            <p style={{fontSize : "16px"}}>You have a success rate of {stats[1]}%</p>
             {scoreList.map((score, index) => {return <p className='text-end text-nowrap fs-5 me-4' key={index}>{score}</p>})}
           </Modal.Body>
           <Modal.Footer className='justify-content-center'>
