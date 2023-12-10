@@ -150,7 +150,6 @@ app.post("/auth/logout", (req, res) => {
 // Called when someone tries to log in with oauth2
 // Should see if they are registered already. If not, create a new record, otherwise update the old record.
 app.get('/auth', async (req, res) => {
-    console.log('from auth')
 
     if (!req.query.code) {
         return res.sendStatus(400).json({message: 'Authorization code missing'})

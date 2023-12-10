@@ -125,7 +125,7 @@ function Game(props) {
           <QuickButtons callback={setDayNumber} dayNumber={dayNumber} maxDays={props.dailies.length}/>
         </Col>
         <Col md={4} className='bg-body-tertiary rounded-3 text-center'>
-          <h1 className='text-primary text-nowrap fs-2' >Score: {6-infos.score}</h1>
+          <span className='text-primary text-nowrap fs-2' >Score: {6-infos.score}</span>
         </Col>
       </Row>
       <br></br>
