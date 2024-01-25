@@ -45,7 +45,7 @@ export default function SignIn() {
         console.log(mapId)
         if (isInt(mapId)) {
             await postSuggestion({mapId: mapId, userId: user.id, times: times, notes: notes})
-            setSugFields({mapId: '', userId: ''})
+            setSugFields({mapId: '', userId: '', times: '', notes: ''})
         }
         else {
             alert("One or more of your inputs was not a valid integer")

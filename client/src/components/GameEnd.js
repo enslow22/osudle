@@ -3,13 +3,16 @@ import { useState } from 'react';
 import dayjs from 'dayjs'
 import Confetti from 'react-confetti'
 
-// Set timezone
-var utc = require('dayjs/plugin/utc')
-var timezone = require('dayjs/plugin/timezone')
-dayjs.extend(utc)
-dayjs.extend(timezone)
+
 
 export default function GameEnd(props) {
+
+    // Set timezone
+    var utc = require('dayjs/plugin/utc')
+    var timezone = require('dayjs/plugin/timezone')
+    dayjs.extend(utc)
+    dayjs.extend(timezone)
+    dayjs.tz.setDefault('America/Los_Angeles')
 
     // time is the seconds until the next day
     
@@ -22,10 +25,11 @@ export default function GameEnd(props) {
     }
 
     useEffect(() => {
-        const now = dayjs.tz(dayjs(), 'PST8PDT');
+        const now = dayjs()
         const deadline = now.add(1, 'day').set('hour', 19).set('minute', 27).set('second', 0)
         setTime(deadline.diff(now)+1000)
     }, [])
+
 
     // Update the time every 1000ms
     useEffect(() => {
